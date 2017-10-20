@@ -1,4 +1,4 @@
-= Red Hat OpenShift Container Platform Jumpstart
+= Manage your Containers with OpenShift - Red Hat Forum 2017 in Vienna
 Dennis Deitermann (dennis@redhat.com), Lutz Lange (Container Security part)
 :scrollbar:
 :data-uri:
@@ -8,7 +8,7 @@ Dennis Deitermann (dennis@redhat.com), Lutz Lange (Container Security part)
 
 == Introduction into the Lab
 
-In this Lab you will learn how to Manage your Containers with OpenShift. First you will see how to use the CLI and the Webinterface and then we will have a short session about Containers and Security. Last but not least you will have a Lab about Container Native Storage with OpenShift.
+In this Lab you will learn how to Manage your Containers with OpenShift. First you will see how to use the CLI and the Webinterface and then we will have a short session about Containers and Security.
 
 Have fun and enjoy the Lab :-)
 
