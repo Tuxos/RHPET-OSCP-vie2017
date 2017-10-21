@@ -2899,8 +2899,8 @@ The message reads : "Forbidden: this image is prohibited by policy".
 
 == The end
 
-Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab.
+Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab, we hope you enjoyed it.
 
-Have a good day a we hope you enjoyed the lab.
+Have a good day :-)
 
-RED HAT! WE PUT THE *F* IN OPENSHIFT!
+RED HAT! WE PUT THE *'F'* IN OPENSHI *F* T!
