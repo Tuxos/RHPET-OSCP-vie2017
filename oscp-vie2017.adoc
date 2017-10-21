@@ -7,11 +7,13 @@ Dennis Deitermann (dennis@redhat.com), Lutz Lange (Container Security part)
 :icons: font
 
 [.lead]
-Red Hat Forum 2017 Vienna Edition
+Red Hat Forum 2017 - Vienna Edition
 
 == Introduction into the Lab
 
-In this Lab you will learn how to Manage your Containers with OpenShift. First you will see how to use the CLI and the Webinterface and then we will have a short session about Containers and Security.
+In this Lab you will learn how to Manage your Containers with OpenShift. First you will see how to use the CLI and the Webinterface and then we will have a short session about Containers and Security. Two hours are too less to show you all stuff regarding OpenShift, but we hope you´ll get a first good impression of OpenShift.
+
+You can start with the Containers and Security Lab (but you mustn´t ;-), to get sure that you don´t miss that part because of missing time.
 
 Have fun and enjoy the Lab :-)
 
@@ -416,10 +418,6 @@ In this section, you manually create services and routes for pods and review the
 +
 In this section, you run commands within active pods and explore the `docker-registry` and `Default Router` containers.
 
-// This setion is missing below 
-//* *Create Persistent Volume for Registry*
-// In this section, you create a persistent volume for your registry, attach it to `deploymentConfiguration`, and redeploy the registry.
-
 ==== Manage Users, Projects, and Quotas
 
 ===== Create Project
@@ -586,7 +584,6 @@ EOF
 
 . Review your limit ranges:
 +
-//image:Review-Ressource-limits.png[]
 ----
 [root@master ~]# oc describe limitranges limits -n resourcemanagement
 Name:		limits
@@ -1355,7 +1352,7 @@ NOTE: Remember, the router routes proxy connections to the pods directly and not
 
 ==== Explore Registry Container
 
-There is two containers that deal with registry related services. There is the docker-registry and there is the registry-console. We are looking at the docker-registry in this section. We will take a quick look at the https://registry-console-default.cloudapps.example.com[Registry-Console^] at a later time.
+There are two containers that deal with registry related services. There is the docker-registry and there is the registry-console. We are looking at the docker-registry in this section. We will take a quick look at the https://registry-console-default.cloudapps.example.com[Registry-Console^] at a later time.
 
 Please ensure that your build from earlier is complete.
 
@@ -1659,7 +1656,6 @@ In this section, you create two separate template instances in two separate proj
 ====
 Templates allow an easy way to define all the required objects of an complex to be sepcified together and made available in Catalogs. Please see our link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/developer_guide/#dev-guide-templates[OpenShift Documentation on Templates^] for more information.
 ====
-:numbered:
 
 ==== Create and Upload Template
 
@@ -1710,7 +1706,6 @@ link:https://access.redhat.com/documentation/en-us/openshift_container_platform/
 [TIP]
 ====
 Alternatively, perform this step from the command line:
-
 ----
 [root@master ~]# oadm new-project instant-app --display-name="instant app example project" --description='A demonstration of an instant-app/template' --node-selector='region=primary' --admin=andrew
 ----
@@ -2173,219 +2168,6 @@ I1222 01:54:51.372703       1 rolling.go:232] RollingUpdater: Scaling ruby-hello
 +
 . Check that your Application is working now and that you can put and get keys.
 
-
-==== Create and Use Webhooks
-
-You can integrate external systems into your OpenShift Container Platform
-environment so that they can start OpenShift Container Platform builds. This allows for use cases where making a change in the source code triggers a build process in OpenShift. This process is triggerd by web hooks. This is a special URL that e.g. your code repository can make a call to, when new code is available.
-
-===== Find the Webhook URL
-
-Your GitHub account can configure a webhook whenever you push a commit to a specific branch.
-
-. Find the webhook URL:
-.. Go to the openshift web console, log in as Marina.
-.. Navigate to your project.
-.. Click *Builds* and then click the sub menu entry *Builds*. 
-.. Select your application build config `ruby-hello-world` from the list
-.. Select the "Configuration" Tab.
-
-* Two webhook URLs are displayed.
-
-. Copy the github URL, which looks like this:
-+
-----
-
-https://<Put External master name here>:8443/oapi/v1/namespaces/lifecycle/buildconfigs/ruby-hello-world/webhooks/_hoMePVjqAPrLKk526hP/github
-
-----
-+
-You can get the External Master name from the https://lab.rhpet.de[Red Hat Partner Enablement Lab Portal^].
-+
-.You can also see the webhook on the command line 
-[subs=+macros]
-----
-[marina@master ~]$ oc describe bc ruby-hello-world 
-Name:		ruby-hello-world
-Namespace:	lifecycle
-Created:	13 minutes ago
-Labels:		app=ruby-hello-world
-Annotations:	openshift.io/generated-by=OpenShiftNewApp
-Latest Version:	1
-
-Strategy:	Docker
-URL:		https://github.com/LutzLange/ruby-hello-world
-From Image:	ImageStreamTag openshift/ruby:2.3
-Output to:	ImageStreamTag ruby-hello-world:latest
-
-Build Run Policy:	Serial
-Triggered by:		Config, ImageChange
-Webhook Generic:
-	URL:		https://master.example.com:8443/oapi/v1/namespaces/lifecycle/buildconfigs/ruby-hello-world/webhooks/a9ui0d5DbzH6_IGOttGO/generic
-	AllowEnv:	false
-pass:quotes[*Webhook GitHub:
-	URL:	https://master.example.com:8443/oapi/v1/namespaces/lifecycle/buildconfigs/ruby-hello-world/webhooks/_hoMePVjqAPrLKk526hP/github*]
-
-Build			Status		Duration	Creation Time
-ruby-hello-world-1 	complete 	3m34s 		2017-06-16 02:56:23 -0400 EDT
-
-No events.
-
-----
-+
-. In the GitHub repository, which you forked earlier, go to *Settings -> Webhooks*.
-. Click "Add webhook"
-. Paste the URL (with the external Master Host Name in it) into the *Payload URL* field.
-. Set "Content type" to `application/json`
-. Disable SSL verification.
-. Click *Add Webhook*.
-
-===== Test Your Webhook
-
-To test your webhook by changing and commiting / pushing some code in the Git repository. Do the following:
-
-[NOTE]
-Alternatively, you can test the webhook the usual way by cloning your repository locally, making the required changes, and pushing them to the repository.
-
-. Go to your forked repository (`https://github.com/GitHubUsername/ruby-hello-world`) and find the `main.erb` file in the `views` folder.
-
-* You can edit files in the GitHub web UI.
-
-. Change this HTML code
-+
-----
-    <div class="page-header" align=center>
-      <h1> Welcome to an OpenShift v3 Demo App! </h1>
-    </div>
-----
-+
-to read as follows (including the deliberately misspelled `crustom`):
-+
-----
-    <div class="page-header" align=center>
-      <h1> This is my crustom demo! </h1>
-    </div>
-----
-
-. Commit the change to the repository.
-
-. Check if a build has started.
-+
-[CAUTION]
-If another build is already running, this latest build may fail because both builds are pushing to the registry. Either run `oc delete build` to stop the earlier build or `oc start-build` to restart the failed build.
-
-. Log in as `marina` and check the web UI to verify that the build is running.
-
-. Wait for the build to complete. It can take a minute for your service endpoint to update.
-. Use your browser to go to the application at `http://ruby-hello-world.lifecycle.cloudapps.example.com/`.
-
-* The output includes the deliberately misspelled `crustom`.
-* If you try to access the application before the update is complete, you may see a `503` error.
-
-
-==== Roll Back Your Application
-
-Because you failed to properly test your application and your typo made it into production, you must revert to the previous version of your application.
-
-. Log in to the web console as `marina`.
-
-. Go to your `Lifecycle Lab` 
-
-. Open the *Application* Menu
-
-. Select *Deployments* 
-
-. Select your frontend `ruby-hello-world` from the list.
-
-* You should see at least 2 deployments versions for your frontend. The lastest version is marked active.
-+
-[TIP]
-====
-Alternatively, view this information from the CLI:
-
-----
-[marina@master ~]$ oc describe dc/ruby-hello-world
-...
-----
-====
-
-. From the CLI, roll back the deployment:
-
-.. Determine which rollouts are available:
-+
-----
-[marina@master ~] oc rollout history dc/ruby-hello-world 
-
-deploymentconfigs "ruby-hello-world"
-REVISION	STATUS		CAUSE
-1		Complete	image change
-2		Complete	config change
-
-----
-.. Choose a deployment and see what a rollback to `ruby-hello-world-X` would
- look like:
-+
-----
-
-[marina@master ~]$ oc rollback ruby-hello-world --to-version=X --dry-run # X is your desired deployment
-Name:		ruby-hello-world
-Namespace:	lifecycle
-Created:	About an hour ago
-Labels:		app=ruby-hello-world
-Annotations:	openshift.io/generated-by=OpenShiftNewApp
-Latest Version:	4
-Selector:	app=ruby-hello-world,deploymentconfig=ruby-hello-world
-Replicas:	1
-Triggers:	Config, Image(ruby-hello-world@latest, auto=false)
-Strategy:	Rolling
-Template:
-  Labels:	app=ruby-hello-world
-		deploymentconfig=ruby-hello-world
-  Annotations:	openshift.io/generated-by=OpenShiftNewApp
-  Containers:
-   ruby-hello-world:
-    Image:			172.30.120.134:5000/lifecycle/ruby-hello-world@sha256:20c8bf8238467e3343e3302ac36fc5f7fe3bbb9b5f48ff65a37dcc790339e48e
-    Port:			8080/TCP
-    Volume Mounts:		<none>
-    Environment Variables:	<none>
-  No volumes.
-
-Latest Deployment:	<none>
-----
-
-* From the above output, you can see that you can go ahead with the rollback.
-
-.. Roll back the deployment:
-+
-----
-[marina@master ~]$ oc rollback ruby-hello-world --to-version=1 # X is your desired deployment
-
-#2 rolled back to ruby-hello-world-1
-Warning: the following images triggers were disabled: ruby-hello-world:latest
-  You can re-enable them with: oc set triggers dc/ruby-hello-world --auto
-----
-
-. Click the *Overview* tab for your project and note that you have a new deployment is happening. 
-
-[NOTE]
-Rolling back to an old deployment version creates the old state as a new deployment. You just reference an old state when rolling back.
-
-. After a few minutes, go back to the application in your browser.
-
-* The old "Welcome . . ." message is displayed.
-
-==== Roll Your Application Forward
-
-To roll forward (activate) the typo-enabled application:
-
-----
-[marina@master ~]$ oc rollback ruby-hello-world-X # X is your desired deployment
-
-#11 rolled back to ruby-hello-world-X
-Warning: the following images triggers were disabled: ruby-hello-world
-  You can re-enable them with: oc deploy ruby-hello-world --enable-triggers
-----
-
 === Cluster Metrics Introduction
 
 Metrics are an important part of every monitoring solution. Metrics allow you to watch certain counters in your environment. OpenShift Container Platform comes with a metric stack that you can use for multiple purposes. The default use case collects information about CPU usage, memory usage, network troughput and a few other measurements.
@@ -2677,14 +2459,6 @@ image::http://people.redhat.com/~llange/labimg/OpenShift-Missing-Health-Checks-5
 +
 The platform is now able to even detect internal application failure situations, but is of cause depending on the nature of the the faults in the application and the quality of the health checks implemented. If you do not provide any health checks, OpenShift falls back onto checking if the docker container is listed as up and running. 
 
-////
-TODO find a good way to break the liveiness check
-- break health
-  # oc rsh 
-
-- watch ocp take aktion
-////
-
 === Container Image Security Scans with CloudForms
 
 Container Scans help you to determine known vulnerabilities in your container images. You can run Container Images scans from CloudForms. Initiate a Container Scan for your the container image of the "rtest" application. 
@@ -2903,9 +2677,6 @@ Environment:	OPENSHIFT_BUILD_NAME=rtest-1
 <4> What builder image was used to create this image?
 <5> The docker name of the builder image
 <6> The release version of the used builder image
-
-// Consider loading the image from the registry and analyse with docker commands
-
 
 * _Labels_: There are no OpenShift Labels on this object. If there were, you could use the -l "label=value" Option with the oc command line tool to select this object. As it is here, you can only use the long id that is found in the name field.
 
@@ -3206,11 +2977,6 @@ Which release of the ruby builder image was used to build the latest version of 
 		release=6.8
 ----
 
-
-// verify the changed release number with Registy Console
-
-
-// think about adding the schedule / policy before doing this manually again
 ==== Rescan the new container images
 
 Go to the CloudForms interface and schedule another image scam for the newly created rtest image. Notice that you will need to know your sha256 ID to identify the correct images quickly. In my case this sha256:828d... 
@@ -3246,18 +3012,6 @@ Tag ruby:2.3 set to import is periodically.
 ----
 
 This will set the ImportPolicy on the Image in the ImageStream Ruby that is tagged with 2.3. OpenShift will fetch new versions of this builder image every 15 min if the are available. The interval can be set in the master-config.yaml. The keyword is scheduledImageImportMinimumIntervalSeconds and defaults to 900 if it is not specified. 
-
-////
-Create imagestream from a docker image and tell it to store locally in the internal OCP registry:
-----
-oc tag --reference-policy=local --source=docker docker.io/image:tag myimagestream:tag
-----
-Schedule the imagestream to track new image changes in the external registry
-----
-oc tag --scheduled=true --source=docker docker.io/image:tag myimagestream:tag
-----
-////
-
 
 === Continued Security in Container Environments 
 
@@ -3416,3 +3170,11 @@ image::http://people.redhat.com/~llange/labimg/OpenShift-Scaling-rtest-Project-O
 image::http://people.redhat.com/~llange/labimg/OpenShift-Scaling-rtest-prevented-event-view.png[]
 
 The message reads : "Forbidden: this image is prohibited by policy".
+
+== The end
+
+Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab.
+
+Have a good day a we hope you enjoyed the lab.
+
+RED HAT! WE PUT THE *F* IN OPENSHIFT!
