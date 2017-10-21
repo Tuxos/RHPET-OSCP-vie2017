@@ -1,10 +1,13 @@
-= Manage your Containers with OpenShift - Red Hat Forum 2017 in Vienna
+= Manage your Containers with OpenShift - A starter guide
 Dennis Deitermann (dennis@redhat.com), Lutz Lange (Container Security part)
 :scrollbar:
 :data-uri:
 :toc: left
 :numbered:
 :icons: font
+
+[.lead]
+Red Hat Forum 2017 Vienna Edition
 
 == Introduction into the Lab
 
@@ -14,10 +17,12 @@ Have fun and enjoy the Lab :-)
 
 === Lab Reference
 
+You have 7 VMs for your own use. Only the Gateway VM is reachable from the internet. All others are behind a reverse proxy or can only be accessed through the ssh gateway.
+
 [cols="3*", options="header"]
 |===
 | VM Name| FQDN | IP
-| SSH Gateway, DNS & Proxy Server | gw.example.com | 192.168.0.250, Ports 22&80 are open
+| SSH Gateway & Proxy Server | gw.example.com | 192.168.0.250, Ports 22&80 are open
 | Master | master.example.com | 192.168.0.100, Port 8443 is open
 | Infranode | infranode.example.com | 192.168.0.101
 | App Node 1 | node1.example.com | 192.168.0.102
