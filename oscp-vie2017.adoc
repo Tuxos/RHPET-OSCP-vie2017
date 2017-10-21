@@ -2903,4 +2903,4 @@ Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab, we 
 
 Have a good day :-)
 
-RED HAT! WE PUT THE *'F'* IN OPENSHI *F* T!
+RED HAT! WE PUT THE *'F'* IN OPENSHIFT!
