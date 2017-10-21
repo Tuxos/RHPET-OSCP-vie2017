@@ -1895,19 +1895,6 @@ ruby-hello-world   ruby-hello-world-templates.cloudapps.example.com             
 http://ruby-hello-world-templates.cloudapps.example.com
 ----
 
-=== Deployment Life Cycle Lab
-
-This lab includes the following sections:
-
-* *Roll Back, Activate, and Code Life Cycle*
-+
-In this section, you manage the various phases of the deployment's life cycle.
-
-* *Create and Use Web Hooks*
-+
-In this section, you create a Git webhook and start a new build and a new
- deployment automatically by pushing a code change in your Git repository.
-
 === Cluster Metrics Introduction
 
 Metrics are an important part of every monitoring solution. Metrics allow you to watch certain counters in your environment. OpenShift Container Platform comes with a metric stack that you can use for multiple purposes. The default use case collects information about CPU usage, memory usage, network troughput and a few other measurements.
