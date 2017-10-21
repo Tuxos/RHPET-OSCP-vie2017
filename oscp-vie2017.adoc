@@ -23,12 +23,13 @@ Have fun and enjoy the Lab :-)
 | App Node 1 | node1.example.com | 192.168.0.102
 | App Node 2 | node2.example.com | 192.168.0.103
 | App Node 3 | node3.example.com | 192.168.0.104
+| CloudForms | cf.example.com | 192.168.0.200
 |===
 
 [cols="3*", options="header"]
 |===
 | Name | Password | Role
-| userXX | ask the instructor | ssh user to connect to the gateway VM
+| rhpet | ask the instructor | ssh user to connect to the gateway VM
 | root | r3dh4t1! | root user for all VMs
 | admin | r3dh4t1! | OSCP & CloudForms Administrator & Auth user for the Proxy
 | marina | r3dh4t1! | Developer/User
@@ -39,12 +40,12 @@ Have fun and enjoy the Lab :-)
 
 First login to the ssh gateway with the user `rhpet`:
 
-To obtain you gateway ip adress https://lab.rhpet.de[login here^].
+To obtain your GUID and IP adress http://people.redhat.com/grieger/lab_ids_vie2017.html[here^].
 
-Login into the status page with your user `userXX` (change XX to your user id)  and your password (please ask the instructor).
+Login into the ssh gateway with the user `rhpet` and the password you got from the instructor.
 
 ----
-[user@localhost ~]$ ssh user<your lab id>@<your gateway VM ip adress>
+[user@localhost ~]$ ssh rhpet@<your gateway VM ip adress or FQDN>
 
 The authenticity of host '85.190.180.158 (85.190.180.158)' can't be established.
 ECDSA key fingerprint is SHA256:bsDGeuXiG1zpM3RlsN+RlaAPRaDSi6Y/sJoBP2IXNqU.
@@ -216,14 +217,9 @@ https://docs.openshift.com/container-platform/3.5/cli_reference/admin_cli_operat
 
 === Verify Your OpenShift Environment
 
-Login into the master host:
+Make sure that your are on the `master host` and `oc` is in the default project
 ----
-[root@gw ~]# ssh master
-----
-
-Make sure that oc is in the default project
-----
-[root@gw ~]# oc project default
+[root@master ~]# oc project default
 Now using project "default" on server "https://master.example.com:8443".
 ----
 
