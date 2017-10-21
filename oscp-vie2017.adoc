@@ -47,12 +47,12 @@ You have 7 VMs for your own use. Only the Gateway VM is reachable from the inter
 
 First login to the ssh gateway with the user `rhpet`:
 
-To obtain your GUID and IP adress http://people.redhat.com/grieger/lab_ids_vie2017.html[here^].
+To obtain your GUID and FQDN from the Gateway http://people.redhat.com/grieger/lab_ids_vie2017.html[here^].
 
 Login into the ssh gateway with the user `rhpet` and the password you got from the instructor.
 
 ----
-[user@localhost ~]$ ssh rhpet@<your gateway VM ip adress or FQDN>
+[user@localhost ~]$ ssh rhpet@<your FQDN>
 
 The authenticity of host '85.190.180.158 (85.190.180.158)' can't be established.
 ECDSA key fingerprint is SHA256:bsDGeuXiG1zpM3RlsN+RlaAPRaDSi6Y/sJoBP2IXNqU.
@@ -1908,266 +1908,6 @@ In this section, you manage the various phases of the deployment's life cycle.
 In this section, you create a Git webhook and start a new build and a new
  deployment automatically by pushing a code change in your Git repository.
 
-:numbered:
-
-==== Roll Back, Activate, and Code Life Cycle
-
-Going back and forth between different versions of your application and its configuration is helpful not only for developers but for operators as well. You can switch back a deployment version that you know is a working state with OpenShift.
-
-In this section, you take user `marina's hello-ruby` application, modify its
- front end, and then rebuild. Afterwards, you revert to the original version and
-  then go on to your rebuilt version.
-
-The next sections require a GitHub account.
-
-===== Fork Repository
-
-If you have not done so already: from the Git web interface, click *Fork* in the
- upper right corner of the GitHub web UI to fork the Git repository
-  `https://github.com/openshift/ruby-hello-world` into your own account.
-
-===== Create Your Application
-
-[NOTE]
-Remember that `buildconfig` (the build-configuration file) instructs OpenShift Container Platform on how to perform a build.
-
-. As `root`, create a project for user `marina`:
-+
-----
-[root@master ~]# oadm new-project lifecycle --display-name="Lifecycle Lab" \
-    --description="This is the project we use to learn about Lifecycle management" \
-    --admin=marina --node-selector='region=primary'
-----
-
-. Switch to user `marina` and use the `lifecycle` project:
-+
-----
-[root@master ~]# su - marina
-----
-+
-----
-[marina@master ~]$ oc project lifecycle
-----
-
-. Create an application from the `https://github.com/openshift/ruby-hello-world` repository:
-+
-----
-[marina@master ~]$ oc new-app https://github.com/openshift/ruby-hello-world 
-----
-+
-. Run `oc env` to add the environment variables for a database to be used later:
-+
-----
-[marina@master ~]$ oc env dc/ruby-hello-world MYSQL_USER=mysqluser MYSQL_PASSWORD=redhat MYSQL_DATABASE=mydb
-----
-
-. Waiting for the build to finish. Meanwhile, expose your service to the world so that you can test it from your local browser:
-+
-----
-[marina@master ~]$ oc expose service ruby-hello-world
-----
-
-. View the current `buildconfig` for your application:
-+
-----
-[marina@master ~]$ oc get buildconfig ruby-hello-world -o yaml
-----
-
-. This should look like the following text:
-+
-[subs=+macros]
-----
-apiVersion: v1
-kind: BuildConfig
-metadata:
-  annotations:
-    openshift.io/generated-by: OpenShiftNewApp
-  creationTimestamp: 2016-11-15T11:28:51Z
-  labels:
-    app: ruby-hello-world
-  name: ruby-hello-world
-  namespace: lifecycle
-  resourceVersion: "207409"
-  selfLink: /oapi/v1/namespaces/lifecycle/buildconfigs/ruby-hello-world
-  uid: af4f7bf4-ab26-11e6-8733-2cc2602a6dc8
-spec:
-  output:
-    to:
-      kind: ImageStreamTag
-      name: ruby-hello-world:latest
-  postCommit: {}
-  resources: {}
-  source:
-    git:
-pass:quotes[      *uri: https://github.com/openshift/ruby-hello-world*]
-    secrets: []
-    type: Git
-  strategy:
-    sourceStrategy:
-      from:
-        kind: ImageStreamTag
-        name: ruby:2.3
-        namespace: openshift
-    type: Source
-  triggers:
-  - github:
-      secret: yx3JIc_qegmYlwF4dVnT
-    type: GitHub
-  - generic:
-      secret: GH4lDKWvCeLfBh0-O2u6
-    type: Generic
-  - type: ConfigChange
-  - imageChange:
-      lastTriggeredImageID: registry.access.redhat.com/rhscl/ruby-23-rhel7@sha256:3601dd48c3ee5def47fd641188bcf676f7447346296d4607c40862261b522d93
-    type: ImageChange
-status:
-  lastVersion: 1
-----
-
-. Observe that the current configuration points to the `openshift/ruby-hello-world` github repository.
-
-* Because you forked this repository earlier, you can now point to your git location.
-
-==== Point to your git location
-
-. Run `oc edit` to change the configuration.
-+
-----
-[marina@master ~]$ oc edit bc ruby-hello-world
-----
-
-.. Change the `uri` reference to match the name of your GitHub repository, which is based in part on your GitHub username: `https://github.com/GitHubUsername/ruby-hello-world`.
-+
-[IMPORTANT]
-Replace `GitHubUsername` with your actual GitHub username. For example, if your GitHub username is `jeandeaux`, the name of your GitHub repository is `'https://github.com/jeandeaux/ruby-hello-world`.
-
-.. Save and exit `vi` by typing *:wq*.
-+
-NOTE: There are other ways to achieve this outcome, this way is used to cover
- the `oc edit` and the `oc start-build` commands.
-
-
-. Run `oc get buildconfig ruby-hello-world -o yaml | grep uri`. Notice that `uri` has been updated.
-
-. Run `oc get builds` to check if the new build has started:
-+
-----
-[marina@master ~]$ oc get builds
-----
-+
-No build was started, the change we made does not count as a config change. We essentially changed the application source. You will need to start a build manually :
-+
-----
-[marina@master ~]$ oc get bc
-
-NAME               TYPE      SOURCE
-ruby-hello-world   Docker    https://github.com/YOURUSERNAME/ruby-hello-world
-----
-+
-----
-[marina@master ~]$ oc start-build ruby-hello-world
-
-ruby-hello-world-2
-----
-+
-This has started a new build :
-+
-----
-[marina@master ~]$ oc get builds -w
-
-NAME                 TYPE      FROM	 STATUS     STARTED              DURATION
-ruby-hello-world-1   Source    Git	 Complete   16 minutes ago	 4m25s
-ruby-hello-world-2   Source    Git	 Complete   About a minute ago   1m46s
-----
-+
-Follow the build logs with :
-+
-----
-[marina@master ~]$ oc logs -f bc/ruby-hello-world
-
-I0709 23:41:08.493756       1 docker.go:69] Starting Docker build from justanother1/ruby-hello-world-7 BuildConfig ...
-I0709 23:41:08.508448       1 tar.go:133] Adding to tar: /tmp/docker-build062004796/.gitignore as .gitignore
-I0709 23:41:08.509588       1 tar.go:133] Adding to tar: /tmp/docker-build062004796/.sti/bin/README as .sti/bin/README
-I0709 23:41:08.509953       1 tar.go:133] Adding to tar: /tmp/docker-build062004796/.sti/environment as .sti/environment
-I0709 23:41:08.510183       1 tar.go:133] Adding to tar: /tmp/docker-build062004796/Dockerfile as Dockerfile
-I0709 23:41:08.510548       1 tar.go:133] Adding to tar: /tmp/docker-build062004796/Gemfile as Gemfile
-.......
-Cropped Output
-.......
-----
-
-. Search for the available `mysql` applications (templates):
-+
-----
-[marina@master ~]$ oc new-app --search mysql 
-...
-----
-+
-The above command outputs quite a lot of info in current clusters. Lets run this again but reduce detail with grep. I just want the templates or images that start with mysql. As the next two lines are descriptions for these templates or images, lets display them as well.
-+
-----
-[marina@master ~]$ oc new-app --search mysql | grep ^mysql -A 2
-
-mysql-persistent
-  Project: openshift
-  MySQL database service, with persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/5.7/README.md.
---
-mysql-ephemeral
-  Project: openshift
-  MySQL database service, without persistent storage. For more information about using this template, including OpenShift considerations, see https://github.com/sclorg/mysql-container/blob/master/5.7/README.md.
---
-mysql
-  Project: openshift
-  Tags:    5.6, 5.7, latest
---
-mysql
-  Registry: Docker Hub
-  Tags:     latest
-----
-
-. Create the `database` application by running `oc new-app`:
-+
-----
-[marina@master ~]$ oc new-app --template=mysql-ephemeral --param MYSQL_USER=mysqluser --param MYSQL_PASSWORD=redhat --param MYSQL_DATABASE=mydb --param DATABASE_SERVICE_NAME=database
-----
-
-. Verify that your values were processed correctly:
-+
-----
-[marina@master ~]$ oc env dc/database --list
-----
-+
-----
-# deploymentconfigs database, container mysql
-# MYSQL_USER from secret database, key database-user
-# MYSQL_PASSWORD from secret database, key database-password
-# MYSQL_ROOT_PASSWORD from secret database, key database-root-password
-MYSQL_DATABASE=mydb
-----
-+
-Notice that you can net see the values of MYSQL_USER, MYSQL_PASSWORD and MYSQL_ROOT_PASSWORD as they are marked as secret keys in the template definition. The values are only shown in the output ofthe `oc new-app` command above.
-+
-. You must redeploy your front end so that it checks for the database again. You
- can either delete just the pod, or you can redeploy the application with :
-+
-----
-[marina@master ~]$ oc deploy ruby-hello-world --latest
-----
-
-. You can see the logs for your latest deployment if you use the `oc logs` command this way:
-+
-----
-[marina@master ~]$  oc logs -f dc/ruby-hello-world
-
-I1222 01:54:45.485814       1 deployer.go:198] Deploying from lifecycle/ruby-hello-world-3 to lifecycle/ruby-hello-world-4 (replicas: 1)
-I1222 01:54:46.913895       1 rolling.go:232] RollingUpdater: Continuing update with existing controller ruby-hello-world-4.
-I1222 01:54:47.019320       1 rolling.go:232] RollingUpdater: Scaling up ruby-hello-world-4 from 0 to 1, scaling down ruby-hello-world-3 from 1 to 0 (keep 0 pods available, don't exceed 2 pods)
-I1222 01:54:47.020399       1 rolling.go:232] RollingUpdater: Scaling ruby-hello-world-4 up to 1
-I1222 01:54:51.372703       1 rolling.go:232] RollingUpdater: Scaling ruby-hello-world-3 down to 0
-----
-+
-. Check that your Application is working now and that you can put and get keys.
-
 === Cluster Metrics Introduction
 
 Metrics are an important part of every monitoring solution. Metrics allow you to watch certain counters in your environment. OpenShift Container Platform comes with a metric stack that you can use for multiple purposes. The default use case collects information about CPU usage, memory usage, network troughput and a few other measurements.
@@ -2310,15 +2050,14 @@ CloudForms can even take a look into the managed workloads. This is called *Smar
 The following image illustrates the level of detail that CloudForms collects for workloads. This is a virtual machine called ansible-tower. It is running a RHEL instance, the same level of detail is available for Microsoft Windows Workloads.
 
 image::http://people.redhat.com/~llange/labimg/Virtual-Machine-Details-CloudForms.png[Virtual Machine Details]
-:
 
 === Connect to CloudForms
 
 We did deploy a CloudForms 4.5 for you as part of this Lab. Open your Browser and connect to it via http://cf.example.com. 
 
-. Log into the CloudForms Interface using the User "admin" and the password r3dh4t1!. 
+. Log into the CloudForms Interface using the User `admin` and the password `r3dh4t1!`. 
 +
-You will find the main navigation panel on the right hand side. Hover over Compute, move to Containers and Click on "Overview" in the 3rd side panel. This will bring you to the Container Dashboard. This is an Overview over all configured OpenShift environments.
+You will find the main navigation panel on the right hand side. Hover over Compute, move to Containers and Click on `Overview` in the 3rd side panel. This will bring you to the Container Dashboard. This is an Overview over all configured OpenShift environments.
 +
 image::http://people.redhat.com/~llange/labimg/CloudForms-Container-Provider-Dashboardv2.png[Container Dashboard]
 +
