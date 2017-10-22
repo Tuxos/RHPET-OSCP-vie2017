@@ -58,6 +58,13 @@ The authenticity of host '85.190.180.158 (85.190.180.158)' can't be established.
 ECDSA key fingerprint is SHA256:bsDGeuXiG1zpM3RlsN+RlaAPRaDSi6Y/sJoBP2IXNqU.
 Are you sure you want to continue connecting (yes/no)? yes
 Warning: Permanently added '85.190.180.158' (ECDSA) to the list of known hosts.
+
+----------------------------------------------------------
+ Welcome to the Manage your Container with OpenShift Lab
+
+ Have fun and enjoy the Red Hat Forum 2017 in Vienna :-)
+----------------------------------------------------------
+
 rhpet@85.190.180.158's password:
 Last login: Sun Mar 13 16:28:23 2016 from ipbcc3d2c2.dynamic.kabel-deutschland.de
 [rhpet@gw ~]$
@@ -702,7 +709,7 @@ NOTE: This lab shows you the manual, step-by-step method of creating each object
 EOF
 ----
 
-===== Run Pod
+===== XXXXXXXXXXXXXXX Does not Work! XXXXXXXXXXXXXXXXX Run Pod
 
 Here, you create a simple pod without a _route_ or _service_:
 
@@ -790,6 +797,7 @@ Delete all the objects in your `hello-pod.json` definition file, which, at this 
 
 ----
 [andrew@master ~]$ oc delete -f hello-pod.json
+
 pod "hello-openshift" deleted
 ----
 
@@ -997,11 +1005,14 @@ Delete the object in the `hello-many-pods.json` definition file:
 
 ----
 [andrew@master ~]$ oc delete -f hello-many-pods.json
+
+pod "hello-openshift-1" deleted
+pod "hello-openshift-2" deleted
+pod "hello-openshift-3" deleted
+Error from server (NotFound): pods "hello-openshift-4" not found
 ----
 
-(Optional) Create a project, set the quota with a pod value of `10`, and run `hello-many-pods.json`.
-
-==== Create Services and Routes
+==== XXXXXXXXXXXXXXXXXX Doesn´t work. No Route. XXXXXXXXXXXXXXXXXXXXX Create Services and Routes
 
 As `andrew`, create a project called `scvslab`:
 
@@ -1021,8 +1032,6 @@ You can add applications to this project with the 'new-app' command. For example
 
 to build a new hello-world application in Ruby.
 ----
-
-TIP: To switch between projects, run `oc project _projectname_`.
 
 Create the `hello-service.json` file:
 
@@ -1128,11 +1137,19 @@ Hello OpenShift!
 
 Next, take a look at the route and registry containers.
 
-===== Create Applications As Examples
+===== XXXXXXXXXXXXX Doesn´t work. No route. XXXXXXXXXXXXXX Create Applications As Examples
 
 As `andrew`, create a project called `explore-example`:
 ----
 [andrew@master ~]$ oc new-project explore-example --display-name="Explore Example" --description="This is the project we use to learn about connecting to pods"
+
+Now using project "explore-example" on server "https://master.example.com:8443".
+
+You can add applications to this project with the 'new-app' command. For example, try:
+
+    oc new-app centos/ruby-22-centos7~https://github.com/openshift/ruby-ex.git
+
+to build a new example application in Ruby.
 ----
 
 Applying the same image as before, run `oc new-app` to deploy `hello-openshift`:
@@ -1175,6 +1192,8 @@ hello-openshift-1-g3xow   1/1       Running   0          2m
 Expose the service and create a route for the application:
 ----
 [andrew@master ~]$ oc expose service hello-openshift --hostname=explore.cloudapps.example.com
+
+route "hello-openshift" exposed
 ----
 
 Check if the route works fine:
