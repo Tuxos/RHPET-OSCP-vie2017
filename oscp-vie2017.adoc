@@ -318,7 +318,24 @@ router-1-xq3r6             1/1       Running   7          22d       192.168.0.10
 As you can see, all infrastructure pods are running on the infranode, because we configured a default node selector for this.
 Please have a look https://blog.openshift.com/deploying-applications-to-specific-nodes/[here^] if you want more information.
 
-=== Check Registry
+=== Registry
+
+The Registry is a stateless, highly scalable server side application that stores and lets you distribute Container images.
+OpenShift Container Platform can utilize any server implementing the Docker registry API as a source of images, including the Docker Hub, private registries run by third parties, and the integrated OpenShift Container Platform registry.
+
+==== Integrated OpenShift Container Registry
+
+OpenShift Container Platform provides an integrated container registry called OpenShift Container Registry (OCR) that adds the ability to automatically provision new image repositories on demand. This provides users with a built-in location for their application builds to push the resulting images.
+
+Whenever a new image is pushed to OCR, the registry notifies OpenShift Container Platform about the new image, passing along all the information about it, such as the namespace, name, and image metadata. Different pieces of OpenShift Container Platform react to new images, creating new builds and deployments.
+
+OCR can also be deployed as a stand-alone component that acts solely as a container registry, without the build and deployment integration. See Installing a Stand-alone Deployment of OpenShift Container Registry for details.
+
+==== Third Party Registries
+
+OpenShift Container Platform can create containers using images from third party registries, but it is unlikely that these registries offer the same image notification support as the integrated OpenShift Container Platform registry. In this situation OpenShift Container Platform will fetch tags from the remote registry upon imagestream creation. Refreshing the fetched tags is as simple as running oc import-image <stream>. When new images are detected, the previously-described build and deployment reactions occur.
+
+==== Check integrated Registry
 
 In this lab scenario, infranode is the target for both the registry and the default router.
 
@@ -377,7 +394,7 @@ var environment = {"page":{"title":"Red Hat Container Registry","connect":true},
 * Connection #0 to host registry-console-default.cloudapps.example.com left intact
 ----
 
-As you can see, everything seems fine. If you want you can login into the https://registry-console-default.cloudapps.example.com[Registry Console^] with `admin` and the password `r3dh4t1!`.
+As you can see, everything seems fine. If you want, you can login into the https://registry-console-default.cloudapps.example.com[Registry Console^] with `admin` and the password `r3dh4t1!`. We will inspect the registry container more deeply in a later lab.
 
 === Set Regions and Zones
 
