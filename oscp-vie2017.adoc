@@ -394,7 +394,7 @@ var environment = {"page":{"title":"Red Hat Container Registry","connect":true},
 * Connection #0 to host registry-console-default.cloudapps.example.com left intact
 ----
 
-As you can see, everything seems fine. If you want, you can login into the https://registry-console-default.cloudapps.example.com[Registry Console^] with `admin` and the password `r3dh4t1!`. We will inspect the registry container more deeply in a later lab.
+As you can see, everything seems fine. If you want, you can login into the https://registry-console-default.cloudapps.example.com[Registry Console^] with `admin` and the password `r3dh4t1!`.
 
 === Set Regions and Zones
 
@@ -403,6 +403,7 @@ We have already labeled your nodes.
 Check the labels of the nodes:
 ----
 [root@master ~]# oc get nodes --show-labels
+
 infranode.example.com   Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infranode.example.com,region=infra,zone=infranodes
 master.example.com      Ready,SchedulingDisabled   28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.example.com,region=master
 node1.example.com       Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.example.com,region=primary,zone=east
@@ -410,11 +411,12 @@ node2.example.com       Ready                      28d       beta.kubernetes.io/
 node3.example.com       Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.example.com,region=primary,zone=north
 ----
 
-You now have a running OpenShift Container Platform environment across four hosts with one master and three nodes, divided into two regions: infra and primary.
+You have a running OpenShift Container Platform environment across five hosts with one master and four nodes, divided into two regions: infra and primary.
 
 Check that registry, registry-console and router are running on the infranode:
 ----
 [root@master ~]# oc get pods -o wide -n default
+
 NAME                       READY     STATUS    RESTARTS   AGE       IP              NODE
 docker-registry-1-26xs7    1/1       Running   9          28d       10.128.0.19     infranode.example.com
 registry-console-1-tbwwj   1/1       Running   5          8d        10.128.0.18     infranode.example.com
@@ -450,6 +452,8 @@ On the master host, run `oadm` to create and assign the administrative user `and
 [root@master ~]# oadm new-project resourcemanagement --display-name="Resources Management" \
 --description="This is the project we use to learn about resource management" \
 --admin=andrew  --node-selector='region=primary'
+
+Created project resourcemanagement
 ----
 
 [NOTE]
@@ -478,14 +482,14 @@ The project is empty because it has no apps. You change that as part of this lab
 [NOTE]
 .An error occured getting metrics
 ====
-We are using self signed certificates here, this is why your browser can't contact our metrics stack. Click "OpenMetricsURL and accept the certificate in your Browser or ignore the error for now.
+At the moment the metrics service isn´t configured. We will fix that later on.
 ====
 
 ===== Apply Quota to Project
 
 A resource quota, defined by a ResourceQuota object, provides constraints that limit aggregate resource consumption per project. It can limit the quantity of objects that can be created in a project by type, as well as the total amount of compute resources and storage that may be consumed by resources in that project.
 
-. Create a quota definition file:
+. On the master host create a quota definition file:
 +
 ----
 [root@master ~]# cat << EOF > quota.json
@@ -514,12 +518,15 @@ EOF
 +
 ----
 [root@master ~]# oc create -f quota.json --namespace=resourcemanagement
+
+resourcequota "test-quota" created
 ----
 
 .. Verify that the quota exists:
 +
 ----
-[root@master ~]# oc get quota -n resourcemanagement 
+[root@master ~]# oc get quota -n resourcemanagement
+
 NAME         AGE
 test-quota   11s
 ----
@@ -529,6 +536,7 @@ test-quota   11s
 [tabsize=8]
 ----
 [root@master ~]# oc describe quota test-quota -n resourcemanagement
+
 Name:			test-quota
 Namespace:		resourcemanagement
 Resource		Used	Hard
