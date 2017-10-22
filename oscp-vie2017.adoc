@@ -610,12 +610,15 @@ EOF
 +
 ----
 [root@master ~]# oc create -f limits.json --namespace=resourcemanagement
+
+limitrange "limits" created
 ----
 
 . Review your limit ranges:
 +
 ----
 [root@master ~]# oc describe limitranges limits -n resourcemanagement
+
 Name:		limits
 Namespace:	resourcemanagement
 Type		Resource	Min	Max	Default Request	Default Limit	Max Limit/Request Ratio
@@ -628,14 +631,9 @@ Container	memory		5Mi	750Mi	100Mi		100Mi		-
 
 ==== Test Quota and Limit Settings
 
-NOTE: You are running commands as the Linux users `andrew` and `root` in a lab environment. As a user it is unusual to use the `oc` command directly on the master. It is common to install `oc` on your workstation or notebook. You can get the Upstream OpenShift client tools for your operating system link:https://github.com/openshift/origin/releases/tag/v1.5.1[here]. And the OpenShift Client tools with support are found on the link:https://access.redhat.com/downloads/content/290[Red Hat Customer Portal].
+NOTE: You are running commands as the Linux users `andrew` and `root` in a lab environment. As a user it is unusual to use the `oc` command directly on the master. It is common to install `oc` on your workstation or notebook. You can get the OpenShift client tools for your operating system https://docs.openshift.com/container-platform/3.5/cli_reference/get_started_cli.html[here^].
 
-The following lab will be done on the command line interface.
-
-. Authenticate to OpenShift Container Platform and choose your project:
-
-.. Connect to the shell of the OpenShift Container Platform master according to the procedure you followed
- previously.
+. Now we switch to the OS user `andrew` and login into OpenShift with the OpenShift user `andrew`. 
 
 .. When prompted, type the username and password:
 ** *Username*: `andrew`
