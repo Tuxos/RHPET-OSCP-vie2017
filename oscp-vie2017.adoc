@@ -436,12 +436,6 @@ The web console could take up to 90 seconds to become available after a restart 
 +
 [NOTE]
 The project is empty because it has no apps. You change that as part of this lab. 
-+
-[NOTE]
-.An error occured getting metrics
-====
-At the moment the metrics service isn´t configured. We will fix that later on.
-====
 
 ===== Apply Quota to Project
 
@@ -660,7 +654,7 @@ NOTE: This lab shows you the manual, step-by-step method of creating each object
 EOF
 ----
 
-===== XXXXXXXXXXXXXXX Does not Work! XXXXXXXXXXXXXXXXX Run Pod
+===== Run Pod
 
 Here, you create a simple pod without a _route_ or _service_:
 
@@ -670,7 +664,7 @@ Create and verify the `hello-openshift` pod:
 
 pod "hello-openshift" created
 ----
-Wait a few seconds until the pod is up and running. (~40 seconds are needed)
+Wait a few seconds until the pod is up and running. (~40 seconds are needed) You can use `oc get pods -w` to see it directly when the status is changing.
 ----
 [andrew@master ~]$ oc get pods
 
@@ -946,7 +940,7 @@ Create the items in the `hello-many-pods.json` file:
 pod "hello-openshift-1" created
 pod "hello-openshift-2" created
 pod "hello-openshift-3" created
-Error from server: pods "hello-openshift-4" is forbidden: Exceeded quota: test-quota, requested: pods=1, used: pods=3, limited: pods=3
+Error from server (Forbidden): pods "hello-openshift-4" is forbidden: exceeded quota: test-quota, requested: pods=1, used: pods=3, limited: pods=3
 ----
 
 [NOTE]
@@ -963,7 +957,7 @@ pod "hello-openshift-3" deleted
 Error from server (NotFound): pods "hello-openshift-4" not found
 ----
 
-==== XXXXXXXXXXXXXXXXXX Doesn´t work. No Route. XXXXXXXXXXXXXXXXXXXXX Create Services and Routes
+==== Create Services and Routes
 
 As `andrew`, create a project called `scvslab`:
 
@@ -1053,6 +1047,11 @@ Create pods according to the `hello-many-pods.json` definition file:
 
 ----
 [andrew@master ~]$ oc create -f hello-many-pods.json
+
+pod "hello-openshift-1" created
+pod "hello-openshift-2" created
+pod "hello-openshift-3" created
+pod "hello-openshift-4" created
 ----
 
 Wait a few seconds and check the service again.
@@ -1088,7 +1087,7 @@ Hello OpenShift!
 
 Next, take a look at the route and registry containers.
 
-===== XXXXXXXXXXXXX Doesn´t work. No route. XXXXXXXXXXXXXX Create Applications As Examples
+===== Create Applications As Examples
 
 As `andrew`, create a project called `explore-example`:
 ----
@@ -1256,11 +1255,10 @@ backend be_http_explore-example_hello-openshift
 sh-4.2$ ps -ef
 
 UID         PID   PPID  C STIME TTY          TIME CMD
-1000020+      1      0  0 07:21 ?        00:00:21 /usr/bin/openshift-router
-1000020+    726      1  0 10:58 ?        00:00:44 /usr/sbin/haproxy -f /var/lib/
-1000020+   1230      1  1 14:29 ?        00:00:06 /usr/sbin/haproxy -f /var/lib/
-1000020+   1263      0  0 14:34 ?        00:00:00 /bin/sh
-1000020+   1279   1263  0 14:37 ?        00:00:00 ps -ef
+1000020+      1      0  0 21:33 ?        00:00:02 /usr/bin/openshift-router
+1000020+    294      1  0 22:09 ?        00:00:00 /usr/sbin/haproxy -f /var/lib/
+1000020+    298      0  0 22:09 ?        00:00:00 /bin/sh
+1000020+    305    298  0 22:10 ?        00:00:00 ps -ef
 ----
 .. Examine the haproxy.config more closely. This could look something like this like this:
 +
@@ -1349,6 +1347,14 @@ pass:quotes[  *server* 456a8f857d60f0a14165ad58cff18e10 10.128.2.32:8080 check i
 
 NOTE: Remember, the router routes proxy connections to the pods directly and not through the service. The router uses the service only to obtain a list of the pod endpoints (IP addresses).
 
+Leave the container an switch to andrew:
+----
+sh-4.2$ exit
+
+exit
+[root@master ~]# su - andrew
+----
+
 ==== Explore Registry Container
 
 There are two containers that deal with registry related services. There is the docker-registry and there is the registry-console. We are looking at the docker-registry in this section. We will take a quick look at the https://registry-console-default.cloudapps.example.com[Registry-Console^] at a later time.
@@ -1358,6 +1364,7 @@ Please ensure that your build from earlier is complete.
 . As user `*andrew*`, check the logs of the build that we stared a while back:
 +
 ----
+
 [andrew@master ~]$ oc logs builds/sinatra-example-1
 
 Cloning "https://github.com/openshift/sinatra-example" ...
@@ -1397,7 +1404,7 @@ Notice the last few lines here. The *Push successful* indicates that the new con
 . As `root`, start a shell inside the Container Context by running `oc rsh` along with the `docker-registry` pod name:
 +
 ----
-[root@master ~]# oc rsh docker-registry-1-qbv9l
+[root@master ~]# oc rsh docker-registry-1-<your registry id>
 ----
 
 . Do the following:
@@ -1592,14 +1599,14 @@ Once the project is in place, the *Add to Project* screen is displayed.
 . In the *Add to Project* screen, type `ruby` in the search field of the *Browse Catalog* Tab to filter the available instant apps, templates, and builder images.
 
 . We choose the plain Ruby Application here
-. Set the version to `2.2 - latest` 
+. Set the version to `2.2` 
 . Click "Select"
 
 . Specify the name and Git repository URL:
 * *Name*: `my-ruby-hello-world`.
 * *Git Repository URL*: `https://github.com/openshift/ruby-hello-world`.
 
-. Click *Show advanced build and deployment options* and select the following options:
+. Click *Show advanced options for source, routes, builds, and deployments.* and select the following options:
 .. Notice that you get a route per default for your application.
 .. Note that you can decide if Builds or Deployments should start automatically.
 .. Change the scaling parameter to 3.
@@ -1609,7 +1616,7 @@ Once the project is in place, the *Add to Project* screen is displayed.
 
 . Click *Continue to Overview* to go to the application's *Overview* screen.
 
-. Click *View Log* to verify that a build is in progress.
+. Click *View Log* to verify that a build is in progress. (this needs some time)
 
 . Review the log as the build progresses.
 
@@ -1683,7 +1690,9 @@ The OpenShift Container Platform comes with a long list of preconfigured templat
 
 ----
 [root@master ~]# oc get templates -n openshift 
-...
+
+... <many lines> ...
+sso70-postgresql-persistent                     Application template for SSO 7.0 PostgreSQL applications with persistent storage   33 (17 blank)     8
 ----
 
 Do not be alarmed by the complexity of Templates. You can even create templates from existing Objects. Please see our Documentation on 
@@ -1692,7 +1701,6 @@ link:https://access.redhat.com/documentation/en-us/openshift_container_platform/
 ===== Create Instant App from Template
 
 . On your browser, connect to the OpenShift web console at `https://master.example.com:8443[https://master.example.com:8443]`:
-.. If prompted, accept the untrusted certificate.
 .. Log in as `andrew` with the password `r3dh4t1!`.
 
 . Click the blue *New Project* button in the top right corner.
@@ -1734,263 +1742,10 @@ Our Application is currently still missing heath checks for all containers. You 
 
 ===== Use Application
 
-After the build is complete, visit your application at `http://example-route-instant-app.cloudapps.example.com/[http://example-route-instant-app.cloudapps.example.com/]`.
+After the build is complete and both frontend and database are up and running, visit your application at `http://example-route-instant-app.cloudapps.example.com/[http://example-route-instant-app.cloudapps.example.com/^]`.
 
 [NOTE]
 Be sure to use HTTP and _not_ HTTPS. HTTPS does not work for this example because the form submission was coded with HTTP links.
-
-==== Use Templates and Template Parameters
-
-Quick starts are nice and handy. But you will not be writing them from scratch. Developers are usualld stating with the components themselvs and will put the whole app together step by step first. This is what we will walk you through next. You treat the quick-start example as two separate applications to be wired together.
-
-===== Deploy Ephemeral Database Back End
-
-. Create a project new project for this work to live in:
-
-.. Use your browser to connect to the OpenShift web console at `https://master.example.com:8443`.
-.. If prompted, accept the untrusted certificate.
-.. Log in as `marina` with the password `r3dh4t1!`.
-
-.. Click the blue *New Project* button in the top right corner.
-
-.. Specify the project name, display name, and description:
-* *Name*: `templates`
-* *Display Name*: `Templates Testing Project`
-* *Description*: `Project for testing templates`
-[TIP]
-Alternatively, perform this step from the command line:
-+
-----
-[root@master ~]# oadm new-project templates --display-name="Templates Testing Project" --description='Project used to test templates' --admin=marina
-----
-
-. Deploy an ephemeral MySQL database:
-
-.. From the `templates` project's *Overview* screen, click *Add to project*.
-.. Search for `mysql-ephemeral` in the `Browse Catalog`
-.. Select the `mysql-ephemeral` database template.
-
-.. Set the template parameters:
-* *Database Service Name*: `database`
-* *MySQL Connection Username*: `mysqluser`
-* *MySQL Connection Password*: `redhat`
-* *MySQL Database Name*: `mydb`
-+
-CAUTION: Make sure you set these values correctly, otherwise the application
- would not connect to the database backend.
-
-.. Click *Create* and then click *Continue to overview*.
-+
-[TIP]
-Alternatively, create the template instance from the command line:
-+
-----
-[root@master ~]# su - marina
-----
-Be sure that you login as marina in OpenShift with `oc login -u marina https://master.example.com:8443` if you get an error message.
-----
-[marina@master ~]$ oc project templates
-----
-+
-----
-[marina@master ~]$ oc new-app --template=mysql-ephemeral --param MYSQL_USER=mysqluser --param MYSQL_PASSWORD=redhat --param MYSQL_DATABASE=mydb --param DATABASE_SERVICE_NAME=database
-----
-
-.. As `marina`, switch to the "templates" project (if you are not in that project already) and examine the objects that
- were created as part of the `mysql-ephemeral` template.
-+
-----
-[marina@master ~]$ oc get projects
-
-NAME                DISPLAY NAME                STATUS
-custom-s2i-script   Custom S2I Build Script     Active
-templates           Templates Testing Project   Active
-----
-+
-----
-[marina@master ~]$ oc project templates
-
-Now using project "templates" on server "https://master.example.com:8443".
-----
-+
-----
-[marina@master ~]$ oc get dc
-
-NAME       REVISION   DESIRED   CURRENT   TRIGGERED BY
-database   1          1         1         config,image(mysql:5.7)
-----
-+
-----
-[marina@master ~]$oc get service -o wide
-
-NAME       CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE       SELECTOR
-database   172.30.142.93   <none>        3306/TCP   3m        name=database
-----
-+
-[NOTE]
-A deployment configuration is available for your instance. The service name is the same as that of your `DATABASE_SERVICE_NAME` parameter.
-
-.. Verify that the values of the environment variables in the deployment configuration (`dc`) are correct:
-+
-----
-[marina@master ~]$ oc env dc database --list
-
-# deploymentconfigs database, container mysql
-# MYSQL_USER from secret database, key database-user
-# MYSQL_PASSWORD from secret database, key database-password
-# MYSQL_ROOT_PASSWORD from secret database, key database-root-password
-MYSQL_DATABASE=mydb
-----
-
-[NOTE]
-.Security relevant Environment Settings
-Notic that the security releavant settings in environment vars are not displayed by commented out in the above output.
-
-
-===== Deploy Application's Ruby Front End
-
-. As `marina`, create an application with the `https://github.com/openshift/ruby-hello-world` Git repository:
-+
-----
-[marina@master ~]$ oc new-app openshift/ruby~https://github.com/openshift/ruby-hello-world MYSQL_USER=mysqluser MYSQL_PASSWORD=redhat MYSQL_DATABASE=mydb
-----
-
-. Verify that your service is in place:
-+
-----
-[marina@master ~]$ oc get service -o wide
-
-NAME               CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE       SELECTOR
-database           172.30.142.93   <none>        3306/TCP   20m       name=database
-ruby-hello-world   172.30.37.49    <none>        8080/TCP   2m        app=ruby-hello-world,deploymentconfig=ruby-hello-world
-----
-
-. Create an external route to your front-end application.
-
-* If you do not specify a host name, the default subdomain route creates the route.
-+
-----
-[marina@master ~]$ oc expose service ruby-hello-world
-
-route "ruby-hello-world" exposed
-----
-+
-----
-[marina@master ~]$ oc get route
-
-NAME               HOST/PORT                                                     PATH      SERVICE            LABELS
-ruby-hello-world   ruby-hello-world-templates.cloudapps.example.com             ruby-hello-world   app=ruby-hello-world
-----
-+
-. Wait for the build to complete. Then test your environment:
-+
-----
-[marina@master ~]$ oc logs -f builds/ruby-hello-world-1
-----
-
-. Wait for the pods to start and verify that your application is running and connecting to the database:
-+
-----
-http://ruby-hello-world-templates.cloudapps.example.com
-----
-
-=== Cluster Metrics Introduction
-
-Metrics are an important part of every monitoring solution. Metrics allow you to watch certain counters in your environment. OpenShift Container Platform comes with a metric stack that you can use for multiple purposes. The default use case collects information about CPU usage, memory usage, network troughput and a few other measurements.
-
-[NOTE]
-.Self-Signed-Certificates 
-====
-If you are using self signed certificates, you will need to direct your browser to the metrics URL once and accept the certificate in order to see metrics in the WebUI of OCP.
-====
-
-image::http://people.redhat.com/~llange/labimg/Open-Metrics-URL-Error-in-WebUI.png[Metrics Error in WebUI]
-
-. Click on "Open Metrics URL" - this will open a new tab in your browser.
-. In Firefox, click the "Advanced" button. Choose "Add Exeception..." and click "Confirm Security Exception".
-. The page will look like this, if everything is working.
-+
-image::http://people.redhat.com/~llange/labimg/Hawkular-Metrics-working.png[]
-+
-. Reload the WebUI tab that showed the initial error. OCP 3.5 will show CPU, Memory and Network metrics in the WebUI Overview section of the projects and in the metrics tab of each pod.
-+
-image::http://people.redhat.com/~llange/labimg/Metrics-Default-Project-Overview-Page-Registy-Console.png[]
-+
-. In the default project, click the pod of the registry-console, you get to the pod details :
-+
-image::http://people.redhat.com/~llange/labimg/Registry-Console-Pod-Details.png[]
-+
-. Go to the metrics tab will display more details and allow you to select what time range of metrics you want to display.
-+
-image::http://people.redhat.com/~llange/labimg/Metrics-Details-Registy-Console.png[]
-
-The metrics stack is usually deployed in the openshift-infra project. You can check status there as well. This can be done from the command line or in the Web UI. This is how you do this on the command line :
-
-----
-$ oc project openshift-infra
-$ oc get pods
-NAME                         READY     STATUS    RESTARTS   AGE
-hawkular-cassandra-1-6tx6k   1/1       Running   0          36m
-hawkular-metrics-zp23l       1/1       Running   1          36m
-heapster-8fjdc               1/1       Running   0          36m
-----
-
-There are 3 pods in the output above. Notice that all pods are marked as running and all containers that are supposed to run in each pod are up (1/1). Heapster collects the metrics, hawkular provides it for retrieval and stores the metrics in the cassandra backend. There are 4 services created for internal communication and one route that allows access the the hawkular-metrics service from the WebUI.
-
-----
-$ oc get services
-NAME                       CLUSTER-IP       EXTERNAL-IP   PORT(S)                               AGE
-hawkular-cassandra         172.30.181.23    <none>        9042/TCP,9160/TCP,7000/TCP,7001/TCP   2h
-hawkular-cassandra-nodes   None             <none>        9042/TCP,9160/TCP,7000/TCP,7001/TCP   2h
-hawkular-metrics           172.30.78.27     <none>        443/TCP                               2h
-heapster                   172.30.203.233   <none>        80/TCP                                2h
-----
-----
-$ oc get route
-NAME               HOST/PORT                                SERVICES           PORT   
-hawkular-metrics   hawkular-metrics.cloudapps.example.com   hawkular-metrics   <all>  
-----
-
-The next diagram illustrates what you have just seen in the Web UI and on the Command line:
-
-image::http://people.redhat.com/~llange/labimg/OpenShift-Hawkular-Stack-Overview.png[Metric Stack Overview]
-
-Verify the metric stack status as well in your WebUI :
-
-image::http://people.redhat.com/~llange/labimg/Metrics-Status-Overview-WebUI.png[]
-
-You can also check the oadm diagnostics output to look for health information of the metric stack. Note that oadm offers a rich set ouf diagnostics to choose from.
-
-----
-# oadm diagnostics --help
-... 
- 
-  oadm diagnostics <DiagnosticName>
-  
-The available diagnostic names are: AggregatedLogging, AnalyzeLogs, ClusterRegistry, ClusterRoleBindings, ClusterRoles,
-ClusterRouter, ConfigContexts, DiagnosticPod, MasterConfigCheck, MasterNode, MetricsApiProxy, NetworkCheck,
-NodeConfigCheck, NodeDefinitions, ServiceExternalIPs, UnitStatus.
-
-Usage:
-  oadm diagnostics [options]
-
-...
-----
-
-. Run the oadm diagnostics for the MetricsApiProxy :
-
-----
-# oadm diagnostics MetricsApiProxy
-[Note] Determining if client configuration exists for client/cluster diagnostics
-Info:  Successfully read a client config file at '/root/.kube/config'
-Info:  Using context for cluster-admin access: 'openshift-infra/master-example-com:8443/system:admin'
-
-[Note] Running diagnostic: MetricsApiProxy
-       Description: Check the integrated heapster metrics can be reached via the API proxy
-       
-[Note] Summary of diagnostics execution (version v3.5.5.8):
-[Note] Completed with no errors or warnings seen.
-----
 
 == Containers and Security Lab
 
