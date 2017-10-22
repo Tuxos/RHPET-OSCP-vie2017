@@ -19,18 +19,18 @@ Have fun and enjoy the Lab :-)
 
 === Lab Reference
 
-You have 7 VMs for your own use. Only the Gateway VM is reachable from the internet. All others are behind a reverse proxy or can only be accessed through the ssh gateway.
+You have seven VMs for your own use. Only the Gateway VM is reachable from the internet. All others are behind a reverse proxy or can only be accessed through the ssh gateway.
 
 [cols="3*", options="header"]
 |===
 | VM Name| FQDN | IP
-| SSH Gateway & Proxy Server | gw.example.com | 192.168.0.250, Ports 22&80 are open
+| SSH Gateway & Proxy Server | gw.example.com | 192.168.0.250, Ports 22&80&443 are open
 | Master | master.example.com | 192.168.0.100, Port 8443 is open
 | Infranode | infranode.example.com | 192.168.0.101
 | App Node 1 | node1.example.com | 192.168.0.102
 | App Node 2 | node2.example.com | 192.168.0.103
 | App Node 3 | node3.example.com | 192.168.0.104
-| CloudForms | cf.example.com | 192.168.0.200
+| CloudForms | cf.example.com | 192.168.0.200, Port 80&443 are open
 |===
 
 [cols="3*", options="header"]
@@ -47,7 +47,7 @@ You have 7 VMs for your own use. Only the Gateway VM is reachable from the inter
 
 First login to the ssh gateway with the user `rhpet`:
 
-To obtain your GUID and FQDN from the Gateway http://people.redhat.com/grieger/lab_ids_vie2017.html[here^].
+To obtain your GUID and FQDN from the Gateway http://lab.rhpet.de[here^].
 
 Login into the ssh gateway with the user `rhpet` and the password you got from the instructor.
 
