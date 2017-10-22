@@ -63,7 +63,7 @@ Last login: Sun Mar 13 16:28:23 2016 from ipbcc3d2c2.dynamic.kabel-deutschland.d
 [rhpet@gw ~]$
 ----
 
-TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. This link works if you have configured the proxy server: https://gw.example.com[SSH Login into the gateway VM^]. As an alternetive you can type in "https://<your gatway ip adress>" in your browser.
+TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. This link works if you have configured the proxy server: https://gw.example.com[SSH Login into the gateway VM^]. As an alternetive you can type in "https://<your gateway ip adress>" in your browser.
 
 Then get the power of root:
 ----
@@ -228,13 +228,7 @@ https://docs.openshift.com/container-platform/3.5/cli_reference/admin_cli_operat
 
 === Verify Your OpenShift Environment
 
-Make sure that your are on the `master host` and `oc` is in the default project
-----
-[root@master ~]# oc project default
-Now using project "default" on server "https://master.example.com:8443".
-----
-
-Run oc get nodes to check the status of your hosts:
+On the master host run `oc get nodes` to check the status of your OpenShift hosts:
 ----
 [root@master ~]# oc get nodes
 NAME                    STATUS                     AGE
