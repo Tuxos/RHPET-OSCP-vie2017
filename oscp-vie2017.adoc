@@ -81,6 +81,8 @@ Please use your gateway IP adress, port 80 and check the checkbox at "Use this p
 Username for the Proxy is: `admin` +
 Password for the Proxy is: `r3dh4t1!`
 
+The proxy works fine if you see the https://master.example.com:8443/[OpenShift login screen^].
+
 == OpenShift Introduction
 
 === What is OpenShift ?
@@ -250,7 +252,7 @@ registry-console-1-tbwwj   1/1       Running   5          8d
 router-1-xq3r6             1/1       Running   12         28d
 ----
 
-Use your browser to connect to the OpenShift web console at https://master.example.com:8443/[https://master.example.com:8443/^] and accept the untrusted Certificate.
+Use your browser to connect to the OpenShift web console at https://master.example.com:8443/[https://master.example.com:8443/^] and accept the selfsigned Certificate.
 Please don't login this time. We will do this a little bit later.
 
 === Configure OpenShift
