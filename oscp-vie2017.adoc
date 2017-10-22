@@ -63,7 +63,7 @@ Last login: Sun Mar 13 16:28:23 2016 from ipbcc3d2c2.dynamic.kabel-deutschland.d
 [rhpet@gw ~]$
 ----
 
-TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. This link works if you have configured the proxy server: https://gw.example.com[SSH Login into the gateway VM^]. As an alternetive you can type in https://<your gatway ip adress> in your browser.
+TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. This link works if you have configured the proxy server: https://gw.example.com[SSH Login into the gateway VM^]. As an alternetive you can type in "https://<your gatway ip adress>" in your browser.
 
 Then get the power of root:
 ----
@@ -154,7 +154,7 @@ $ oc <command>
 
 The `oc login` command is the best way to initially set up the CLI, and it serves as the entry point for most users. The interactive flow helps you establish a session to an OpenShift Container Platform server with the provided credentials. The information is automatically saved in a CLI configuration file that is then used for subsequent commands.
 
-Login into the master host and the login into OpenShift as admin user:
+Login into the master host and the login into OpenShift as `admin` user with the password `r3dh4t1!`:
 ----
 [root@gw ~]# ssh master
 Last login: Thu Jun  8 10:10:12 2017 from 192.168.0.250
@@ -202,22 +202,23 @@ Now using project "default" on server "https://master.example.com:8443".
 The `oc status` command shows a high level overview of the project currently in use, with its components and their relationships, as shown in the following example:
 ----
 [root@master ~]# oc status
-
 In project default on server https://master.example.com:8443
 
 https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
   dc/docker-registry deploys docker.io/openshift3/ose-docker-registry:v3.5.5.8
-    deployment #1 deployed 3 weeks ago - 1 pod
+    deployment #1 deployed 5 months ago - 1 pod
 
 svc/kubernetes - 172.30.0.1 ports 443, 53->8053, 53->8053
 
 https://registry-console-default.cloudapps.example.com (passthrough) to pod port registry-console (svc/registry-console)
   dc/registry-console deploys registry.access.redhat.com/openshift3/registry-console:3.5
-    deployment #1 deployed 2 days ago - 1 pod
+    deployment #1 deployed 4 months ago - 1 pod
 
 svc/router - 172.30.49.219 ports 80, 443, 1936
   dc/router deploys docker.io/openshift3/ose-haproxy-router:v3.5.5.8
-    deployment #1 deployed 3 weeks ago - 1 pod
+    deployment #1 deployed 5 months ago - 1 pod
+
+2 warnings identified, use 'oc status -v' to see details.
 ----
 
 If you want to learn more about the `oc` command, please look at the following documentation: +
