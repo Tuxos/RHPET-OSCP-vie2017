@@ -63,7 +63,7 @@ Last login: Sun Mar 13 16:28:23 2016 from ipbcc3d2c2.dynamic.kabel-deutschland.d
 [rhpet@gw ~]$
 ----
 
-TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. https://gw.example.com[SSH Login^]
+TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. https://gw.example.com[SSH Login^]
 
 Then get the power of root:
 ----
