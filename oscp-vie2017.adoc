@@ -66,7 +66,7 @@ Warning: Permanently added '85.190.180.158' (ECDSA) to the list of known hosts.
 ----------------------------------------------------------
 
 rhpet@85.190.180.158's password:
-Last login: Sun Mar 13 16:28:23 2016 from ipbcc3d2c2.dynamic.kabel-deutschland.de
+Last login: Sun Oct 22 17:46:19 2017 from gw.example.com
 [rhpet@gw ~]$
 ----
 
@@ -142,7 +142,7 @@ The following topics provide high-level, architectural information on core conce
 
 * https://docs.openshift.com/container-platform/3.5/architecture/core_concepts/templates.html[Templates^] allow for many objects to be created at once based on customized parameters.
 
-Click on the links above to get more information about the respective topic.
+Click on the links above if you want more information about the respective topic.
 
 == Getting started with the OpenShift CLI and the Webinterface
 
@@ -1303,6 +1303,7 @@ sh-4.2$ grep hello-openshift haproxy.config
 backend be_http_explore-example_hello-openshift
 
 sh-4.2$ ps -ef
+
 UID         PID   PPID  C STIME TTY          TIME CMD
 1000020+      1      0  0 07:21 ?        00:00:21 /usr/bin/openshift-router
 1000020+    726      1  0 10:58 ?        00:00:44 /usr/sbin/haproxy -f /var/lib/
@@ -1333,7 +1334,7 @@ pass:quotes[  *server*] 456a8f857d60f0a14165ad58cff18e10 10.128.2.32:8080 check 
 +
 You see that you have only one endpoint defined. (The line which starts with server)
 +
-.. Exit the bash in the container to return to the roo@master shell
+.. Exit the bash in the container to return to the root@master shell
 +
 ----
 sh-4.2$ exit
