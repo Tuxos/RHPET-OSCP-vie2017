@@ -66,7 +66,7 @@ Warning: Permanently added '85.190.180.158' (ECDSA) to the list of known hosts.
 ----------------------------------------------------------
 
 rhpet@85.190.180.158's password:
-Last login: Sun Oct 22 17:46:19 2017 from gw.example.com
+Last login: Sun Oct 22 23:16:00 2017 from gw.example.com
 [rhpet@gw ~]$
 ----
 
@@ -186,7 +186,7 @@ You have access to the following projects and can switch between them with 'oc p
     openshift
   * openshift-infra
 
-Using project "openshift-infra".
+Using project "default".
 ----
 
 You can log out of CLI using the `oc logout` command. But we don't do this now.
@@ -199,13 +199,15 @@ Most oc commands run in the context of a project. The `oc login` selects a defau
 
 ----
 [root@master ~]# oc project
+
+Using project "default" on server "https://master.example.com:8443".
 ----
 
 If you have access to multiple projects, use the following syntax to switch to a particular project by specifying the project name:
 ----
 [root@master ~]# oc project default
 
-Now using project "default" on server "https://master.example.com:8443".
+Already on project "default" on server "https://master.example.com:8443".
 ----
 
 The `oc status` command shows a high level overview of the project currently in use, with its components and their relationships, as shown in the following example:
@@ -214,21 +216,17 @@ The `oc status` command shows a high level overview of the project currently in 
 
 In project default on server https://master.example.com:8443
 
-https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
+svc/docker-registry - 172.30.120.134:5000
   dc/docker-registry deploys docker.io/openshift3/ose-docker-registry:v3.5.5.8
     deployment #1 deployed 5 months ago - 1 pod
 
 svc/kubernetes - 172.30.0.1 ports 443, 53->8053, 53->8053
 
-https://registry-console-default.cloudapps.example.com (passthrough) to pod port registry-console (svc/registry-console)
-  dc/registry-console deploys registry.access.redhat.com/openshift3/registry-console:3.5
-    deployment #1 deployed 4 months ago - 1 pod
-
 svc/router - 172.30.49.219 ports 80, 443, 1936
   dc/router deploys docker.io/openshift3/ose-haproxy-router:v3.5.5.8
     deployment #1 deployed 5 months ago - 1 pod
 
-2 warnings identified, use 'oc status -v' to see details.
+1 warning identified, use 'oc status -v' to see details.
 ----
 
 If you want to learn more about the `oc` command, please look at the following documentation: +
@@ -242,21 +240,20 @@ On the master host run `oc get nodes` to check the status of your OpenShift host
 [root@master ~]# oc get nodes
 
 NAME                    STATUS                     AGE
-infranode.example.com   Ready                      28d
-master.example.com      Ready,SchedulingDisabled   28d
-node1.example.com       Ready                      28d
-node2.example.com       Ready                      28d
-node3.example.com       Ready                      28d
+infranode.example.com   Ready                      159d
+master.example.com      Ready,SchedulingDisabled   159d
+node1.example.com       Ready                      159d
+node2.example.com       Ready                      159d
+node3.example.com       Ready                      159d
 ----
 
 Check if the installer has deployed the router and the registry containers:
 ----
 [root@master ~]# oc get pods
 
-NAME                       READY     STATUS    RESTARTS   AGE
-docker-registry-1-26xs7    1/1       Running   9          28d
-registry-console-1-tbwwj   1/1       Running   5          8d
-router-1-xq3r6             1/1       Running   12         28d
+NAME                      READY     STATUS    RESTARTS   AGE
+docker-registry-1-26xs7   1/1       Running   5          159d
+router-1-xq3r6            1/1       Running   7          159d
 ----
 
 === Configure OpenShift
@@ -303,11 +300,11 @@ Check the labels of the nodes:
 [root@master ~]# oc get nodes --show-labels
 
 NAME                    STATUS                     AGE       LABELS
-infranode.example.com   Ready                      22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infranode.example.com,region=infra,zone=infranodes
-master.example.com      Ready,SchedulingDisabled   22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.example.com,region=master
-node1.example.com       Ready                      22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.example.com,region=primary,zone=east
-node2.example.com       Ready                      22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.example.com,region=primary,zone=west
-node3.example.com       Ready                      22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.example.com,region=primary,zone=north
+infranode.example.com   Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infranode.example.com,region=infra,zone=infranodes
+master.example.com      Ready,SchedulingDisabled   159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.example.com,region=master
+node1.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.example.com,region=primary,zone=east
+node2.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.example.com,region=primary,zone=west
+node3.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.example.com,region=primary,zone=north
 ----
 
 You now have a running OpenShift environment across five hosts with one master and four nodes, divided into three regions: master, infra and primary.
@@ -316,10 +313,9 @@ Check that registry and router are running on the infranode:
 ----
 [root@master ~]# oc get pods -o wide
 
-NAME                       READY     STATUS    RESTARTS   AGE       IP              NODE
-docker-registry-1-26xs7    1/1       Running   5          22d       10.128.0.10     infranode.example.com
-registry-console-1-tbwwj   1/1       Running   1          2d        10.128.0.11     infranode.example.com
-router-1-xq3r6             1/1       Running   7          22d       192.168.0.101   infranode.example.com
+NAME                      READY     STATUS    RESTARTS   AGE       IP              NODE
+docker-registry-1-26xs7   1/1       Running   5          159d      10.128.0.8      infranode.example.com
+router-1-xq3r6            1/1       Running   7          159d      192.168.0.101   infranode.example.com
 ----
 
 As you can see, all infrastructure pods are running on the infranode, because we configured a default node selector for this.
@@ -352,56 +348,41 @@ To check the URL of the docker registry run `oc status`:
 
 In project default on server https://master.example.com:8443
 
-https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
-  dc/docker-registry deploys docker.io/openshift3/ose-docker-registry:v3.5.5.8 
-    deployment #1 deployed 3 weeks ago - 1 pod
+svc/docker-registry - 172.30.120.134:5000
+  dc/docker-registry deploys docker.io/openshift3/ose-docker-registry:v3.5.5.8
+    deployment #1 deployed 5 months ago - 1 pod
 
 svc/kubernetes - 172.30.0.1 ports 443, 53->8053, 53->8053
 
-https://registry-console-default.cloudapps.example.com (passthrough) to pod port registry-console (svc/registry-console)
-  dc/registry-console deploys registry.access.redhat.com/openshift3/registry-console:3.5 
-    deployment #1 deployed 2 days ago - 1 pod
-
 svc/router - 172.30.49.219 ports 80, 443, 1936
-  dc/router deploys docker.io/openshift3/ose-haproxy-router:v3.5.5.8 
-    deployment #1 deployed 3 weeks ago - 1 pod
+  dc/router deploys docker.io/openshift3/ose-haproxy-router:v3.5.5.8
+    deployment #1 deployed 5 months ago - 1 pod
+
+1 warning identified, use 'oc status -v' to see details.
 ----
 
-Test the status of the registry with the curl command to communicate with the registry’s service port, `curl -v https://registry-console-default.cloudapps.example.com --insecure`.
+Test the status of the registry with the curl command to communicate with the registry’s service port, `curl -v <your registry IP from oc status>:5000/healthz`.
 ----
-[root@master ~]# curl -v https://registry-console-default.cloudapps.example.com --insecure | grep "Red Hat Container Registry"
+[root@master ~]# curl -v 172.30.120.134:5000/healthz
 
-  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
-                                 Dload  Upload   Total   Spent    Left  Speed
-  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* About to connect() to registry-console-default.cloudapps.example.com port 443 (#0)
-*   Trying 192.168.0.101...
-* Connected to registry-console-default.cloudapps.example.com (192.168.0.101) port 443 (#0)
-* Initializing NSS with certpath: sql:/etc/pki/nssdb
-* skipping SSL peer certificate verification
-* SSL connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-* Server certificate:
-* 	subject: CN=registry-console-1-tbwwj
-* 	start date: Jun 08 11:03:26 2017 GMT
-* 	expire date: Mai 15 11:03:27 2117 GMT
-* 	common name: registry-console-1-tbwwj
-* 	issuer: CN=registry-console-1-tbwwj
-> GET / HTTP/1.1
+* About to connect() to 172.30.120.134 port 5000 (#0)
+*   Trying 172.30.120.134...
+* Connected to 172.30.120.134 (172.30.120.134) port 5000 (#0)
+> GET /healthz HTTP/1.1
 > User-Agent: curl/7.29.0
-> Host: registry-console-default.cloudapps.example.com
+> Host: 172.30.120.134:5000
 > Accept: */*
-> 
+>
 < HTTP/1.1 200 OK
-< Content-Security-Policy: default-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:
-< Transfer-Encoding: chunked
-< Cache-Control: no-cache, no-store
-< 
-{ [data not shown]
-var environment = {"page":{"title":"Red Hat Container Registry","connect":true},"hostname":"registry-console-1-tbwwj","os-release":{"NAME":"Red Hat Container Registry","ID":"registry","PRETTY_NAME":"Red Hat Container Registry"},"OAuth":{"URL":"https://master.example.com:8443//oauth/authorize?client_id=cockpit-oauth-client&response_type=token","ErrorParam":null,"TokenParam":null}};
-100 42229    0 42229    0     0   212k      0 --:--:-- --:--:-- --:--:--  213k
-* Connection #0 to host registry-console-default.cloudapps.example.com left intact
+< Cache-Control: no-cache
+< Date: Sun, 22 Oct 2017 21:39:06 GMT
+< Content-Length: 0
+< Content-Type: text/plain; charset=utf-8
+<
+* Connection #0 to host 172.30.120.134 left intact
 ----
 
-As you can see, everything seems fine. If you want, you can login into the https://registry-console-default.cloudapps.example.com[Registry Console^] with `admin` and the password `r3dh4t1!`.
+Everything seems fine :-)
 
 === Set Regions and Zones
 
