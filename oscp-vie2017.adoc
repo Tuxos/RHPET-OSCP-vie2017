@@ -231,6 +231,7 @@ https://docs.openshift.com/container-platform/3.5/cli_reference/admin_cli_operat
 On the master host run `oc get nodes` to check the status of your OpenShift hosts:
 ----
 [root@master ~]# oc get nodes
+
 NAME                    STATUS                     AGE
 infranode.example.com   Ready                      28d
 master.example.com      Ready,SchedulingDisabled   28d
@@ -242,6 +243,7 @@ node3.example.com       Ready                      28d
 Check if the installer has deployed the router and the registry containers:
 ----
 [root@master ~]# oc get pods
+
 NAME                       READY     STATUS    RESTARTS   AGE
 docker-registry-1-26xs7    1/1       Running   9          28d
 registry-console-1-tbwwj   1/1       Running   5          8d
