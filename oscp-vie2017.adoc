@@ -81,7 +81,7 @@ Please use your gateway IP adress, port 80 and check the checkbox at "Use this p
 Username for the Proxy is: `admin` +
 Password for the Proxy is: `r3dh4t1!`
 
-The proxy works fine if you see the https://master.example.com:8443/[OpenShift login screen^].
+The proxy works fine if you see the https://master.example.com:8443/[OpenShift login screen^]. Please accept the selfsigned certificate.
 
 == OpenShift Introduction
 
@@ -252,9 +252,6 @@ registry-console-1-tbwwj   1/1       Running   5          8d
 router-1-xq3r6             1/1       Running   12         28d
 ----
 
-Use your browser to connect to the OpenShift web console at https://master.example.com:8443/[https://master.example.com:8443/^] and accept the selfsigned Certificate.
-Please don't login this time. We will do this a little bit later.
-
 === Configure OpenShift
 
 In this section, you check the labels and do some intial configuration.
@@ -297,6 +294,7 @@ We have already labeled your nodes.
 Check the labels of the nodes:
 ----
 [root@master ~]# oc get nodes --show-labels
+
 NAME                    STATUS                     AGE       LABELS
 infranode.example.com   Ready                      22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infranode.example.com,region=infra,zone=infranodes
 master.example.com      Ready,SchedulingDisabled   22d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.example.com,region=master
@@ -310,6 +308,7 @@ You now have a running OpenShift environment across five hosts with one master a
 Check that registry and router are running on the infranode:
 ----
 [root@master ~]# oc get pods -o wide
+
 NAME                       READY     STATUS    RESTARTS   AGE       IP              NODE
 docker-registry-1-26xs7    1/1       Running   5          22d       10.128.0.10     infranode.example.com
 registry-console-1-tbwwj   1/1       Running   1          2d        10.128.0.11     infranode.example.com
@@ -317,7 +316,7 @@ router-1-xq3r6             1/1       Running   7          22d       192.168.0.10
 ----
 
 As you can see, all infrastructure pods are running on the infranode, because we configured a default node selector for this.
-Please look https://blog.openshift.com/deploying-applications-to-specific-nodes/[here^] for more information.
+Please have a look https://blog.openshift.com/deploying-applications-to-specific-nodes/[here^] if you want more information.
 
 === Check Registry
 
@@ -326,6 +325,7 @@ In this lab scenario, infranode is the target for both the registry and the defa
 To check the URL of the docker registry run `oc status`:
 ----
 [root@master ~]# oc status
+
 In project default on server https://master.example.com:8443
 
 https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
@@ -346,6 +346,7 @@ svc/router - 172.30.49.219 ports 80, 443, 1936
 Test the status of the registry with the curl command to communicate with the registry’s service port, `curl -v https://registry-console-default.cloudapps.example.com --insecure`.
 ----
 [root@master ~]# curl -v https://registry-console-default.cloudapps.example.com --insecure | grep "Red Hat Container Registry"
+
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
   0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* About to connect() to registry-console-default.cloudapps.example.com port 443 (#0)
@@ -375,6 +376,8 @@ var environment = {"page":{"title":"Red Hat Container Registry","connect":true},
 100 42229    0 42229    0     0   212k      0 --:--:-- --:--:-- --:--:--  213k
 * Connection #0 to host registry-console-default.cloudapps.example.com left intact
 ----
+
+As you can see, everything seems fine. If you want you can login into the https://registry-console-default.cloudapps.example.com[Registry Console^] with `admin` and the password `r3dh4t1!`.
 
 === Set Regions and Zones
 
