@@ -202,6 +202,7 @@ Now using project "default" on server "https://master.example.com:8443".
 The `oc status` command shows a high level overview of the project currently in use, with its components and their relationships, as shown in the following example:
 ----
 [root@master ~]# oc status
+
 In project default on server https://master.example.com:8443
 
 https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
