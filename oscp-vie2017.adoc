@@ -1794,7 +1794,7 @@ image::http://people.redhat.com/~llange/labimg/Virtual-Machine-Details-CloudForm
 
 === Connect to CloudForms
 
-We did deploy a CloudForms 4.5 for you as part of this Lab. Open your Browser and connect to it via http://cf.example.com. 
+We did deploy a CloudForms 4.5 for you as part of this Lab. Open your Browser and connect to it via https://cf.example.com[https://cf.example.com^]. 
 
 . Log into the CloudForms Interface using the User `admin` and the password `r3dh4t1!`. 
 +
