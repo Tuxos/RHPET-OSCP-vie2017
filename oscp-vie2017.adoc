@@ -291,7 +291,7 @@ Consider:
 
 A service or replication controller that is defined to use pods with the *role=webserver* label treats both of these pods as part of the same group.
 
-=== Set Regions and Zones
+=== Check Regions and Zones
 
 We have already labeled your nodes.
 
@@ -307,7 +307,7 @@ node2.example.com       Ready                      159d      beta.kubernetes.io/
 node3.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.example.com,region=primary,zone=north
 ----
 
-You now have a running OpenShift environment across five hosts with one master and four nodes, divided into three regions: master, infra and primary.
+You now have a running OpenShift environment across five hosts with one master and four nodes, divided into three regions: master, infra and primary and three zones: east, west and north.
 
 Check that registry and router are running on the infranode:
 ----
@@ -392,11 +392,12 @@ Check the labels of the nodes:
 ----
 [root@master ~]# oc get nodes --show-labels
 
-infranode.example.com   Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infranode.example.com,region=infra,zone=infranodes
-master.example.com      Ready,SchedulingDisabled   28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.example.com,region=master
-node1.example.com       Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.example.com,region=primary,zone=east
-node2.example.com       Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.example.com,region=primary,zone=west
-node3.example.com       Ready                      28d       beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.example.com,region=primary,zone=north
+NAME                    STATUS                     AGE       LABELS
+infranode.example.com   Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=infranode.example.com,region=infra,zone=infranodes
+master.example.com      Ready,SchedulingDisabled   159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=master.example.com,region=master
+node1.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node1.example.com,region=primary,zone=east
+node2.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node2.example.com,region=primary,zone=west
+node3.example.com       Ready                      159d      beta.kubernetes.io/arch=amd64,beta.kubernetes.io/os=linux,kubernetes.io/hostname=node3.example.com,region=primary,zone=north
 ----
 
 You have a running OpenShift Container Platform environment across five hosts with one master and four nodes, divided into two regions: infra and primary.
@@ -405,10 +406,9 @@ Check that registry, registry-console and router are running on the infranode:
 ----
 [root@master ~]# oc get pods -o wide -n default
 
-NAME                       READY     STATUS    RESTARTS   AGE       IP              NODE
-docker-registry-1-26xs7    1/1       Running   9          28d       10.128.0.19     infranode.example.com
-registry-console-1-tbwwj   1/1       Running   5          8d        10.128.0.18     infranode.example.com
-router-1-xq3r6             1/1       Running   12         28d       192.168.0.101   infranode.example.com
+NAME                      READY     STATUS    RESTARTS   AGE       IP              NODE
+docker-registry-1-26xs7   1/1       Running   5          159d      10.128.0.8      infranode.example.com
+router-1-xq3r6            1/1       Running   7          159d      192.168.0.101   infranode.example.com
 ----
 
 As you can see, all infrastructure pods are running on the infranode, because we configured a default node selector for this.
