@@ -1937,7 +1937,7 @@ Read more about Readiness and Liveness Check in the link:https://access.redhat.c
 
 It is good style for your application to provide health information for the platform to consume. A best practice pattern is to offer a web page that provides a good return code if your app is healthy. The ruby example that we used provides this information here : link:http://rtest-testproject.cloudapps.example.com/health[http://rtest-testproject.cloudapps.example.com/health^]. 
 
-You can take a look at the application source on Github.com : https://github.com/openshift/ruby-ex for more details.
+You can take a look at the application source on Github.com : https://github.com/openshift/ruby-ex[https://github.com/openshift/ruby-ex^] for more details.
 
 . Got to the Web UI and open the Overview page for your testproject. Notic that you are displayed a warning about missing health checks. 
 +
