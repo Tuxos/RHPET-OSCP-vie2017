@@ -1862,7 +1862,8 @@ You will first create a project for you application to live in. Projects are use
 . Create a project called "testproject" as user andrew now :
 +
 ----
-$ oc new-project testproject --description="My Test Project" --display-name="Test Project"
+[andrew@master ~]$ oc new-project testproject --description="My Test Project" --display-name="Test Project"
+
 now using project "testproject" on server "https://master.example.com:8443".
 
 You can add applications to this project with the 'new-app' command. For example, try:
@@ -1870,14 +1871,6 @@ You can add applications to this project with the 'new-app' command. For example
     oc new-app centos/ruby-22-centos7~https://github.com/openshift/ruby-ex.git
 
 to build a new example application in Ruby.
-----
-+
-. take a look at the --help output from the oc new-app command :
-+
-----
-$ oc new-app --help
-Create a new application by specifying source code, templates, and/or images
-...
 ----
 +
 You can use ImageStreams, Templates and Docker Images to create an Application.
@@ -1891,7 +1884,7 @@ Be aware that the *Docker Container images* need to be compatible with the OpenS
 . Create a Test Application using the ruby:2.3 builder image and the ruby-ex example application. You can do this in the WebUI or on the command line. This is how to do it on the command line : 
 +
 ----
-$ oc new-app openshift/ruby:2.3~https://github.com/openshift/ruby-ex --name=rtest
+[andrew@master ~]$ oc new-app openshift/ruby:2.3~https://github.com/openshift/ruby-ex --name=rtest
 ----
 +
 . Go to the Overview Page of your testproject in the Web UI. If you are quick enough, you will be able to see the following screen. Notice that there is a build in progress.
@@ -1910,24 +1903,22 @@ You will need to create a route object to expose you application to access from 
 +
 [source,cmd,indent=o]
 ----
-[andrew@master ~]# oc project testproject
-Already on project "testproject" on server "https://master.example.com:8443".
-----
-+
-----
 [andrew@master ~]# oc get service
+
 NAME      CLUSTER-IP      EXTERNAL-IP   PORT(S)    AGE
 rtest     172.30.111.54   <none>        8080/TCP   20h
 ----
 +
 ----
 [andrew@master ~]# oc expose service rtest
+
 route "rtest" exposed
 ----
 +
 [source,cmd,indent=o]
 ----
 [andrew@master ~]# oc get route
+
 NAME      HOST/PORT                                 PATH      SERVICES   PORT       TERMINATION   WILDCARD
 rtest     rtest-testproject.cloudapps.example.com             rtest      8080-tcp                 None
 ----
@@ -1938,11 +1929,7 @@ image::http://people.redhat.com/~llange/labimg/TestProject-rtest1-the-app.png[]
 +
 If something went wrong and you want to delete your application, you can do this with the oc tool using the label app=truby. *Do not delete the app* if it runs without problems, we will use it in the next section of this lab. 
 +
-. Delete the app, if you want to start over and try the oc new-app command again in step 2.
-+
-----
-[andrew@master ~]$ oc delete all -l app=rtest
-----
+. Delete the app with `oc delete all -l app=rtest`, if you want to start over and try the oc new-app command again in step 2.
 
 === Application Health Checks
 
