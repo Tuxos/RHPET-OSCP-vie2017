@@ -54,12 +54,13 @@ To obtain your ip address from the Gateway http://lab.rhpet.de[here^].
 Login into the ssh gateway with the user `rhpet` and the password you got from the instructor.
 
 ----
-[user@localhost ~]$ ssh rhpet@<your gateway ip address>
+[user@yourhost ~]$ ssh rhpet@<your gateway ip address>
 
-The authenticity of host '85.190.180.158 (85.190.180.158)' can't be established.
+The authenticity of host '104.199.108.30 (104.199.108.30)' can't be established.
 ECDSA key fingerprint is SHA256:bsDGeuXiG1zpM3RlsN+RlaAPRaDSi6Y/sJoBP2IXNqU.
+ECDSA key fingerprint is MD5:5f:b2:e7:c4:05:c2:37:10:1c:1f:a8:32:a8:ca:5a:38.
 Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '85.190.180.158' (ECDSA) to the list of known hosts.
+Warning: Permanently added '104.199.108.30' (ECDSA) to the list of known hosts.
 
 ----------------------------------------------------------
  Welcome to the Manage your Container with OpenShift Lab
@@ -67,8 +68,7 @@ Warning: Permanently added '85.190.180.158' (ECDSA) to the list of known hosts.
  Have fun and enjoy the Red Hat Forum 2017 in Vienna :-)
 ----------------------------------------------------------
 
-rhpet@85.190.180.158's password:
-Last login: Sun Oct 22 23:16:00 2017 from gw.example.com
+Last login: Mon Oct 23 01:07:02 2017 from ipbcc3d64f.dynamic.kabel-deutschland.de
 [rhpet@gw ~]$
 ----
 
