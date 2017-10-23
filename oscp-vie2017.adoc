@@ -1165,6 +1165,7 @@ NAME              CLUSTER-IP      EXTERNAL-IP   PORT(S)             AGE
 hello-openshift   172.30.24.220   <none>        8080/TCP,8888/TCP   37s
 ----
 
+Wait until the Conatiner Status is Running. (it takes minute)
 ----
 [andrew@master ~]$ oc get pods
 
@@ -1186,6 +1187,8 @@ Check if the route works fine:
 
 Hello OpenShift!
 ----
+
+Now it works without the ssh, because we have an external route to the container.
 
 In a later section, you explore the `docker-registry` container. To save time, start an S2I build now to push an image into the registry:
 
