@@ -405,7 +405,6 @@ var environment = {"page":{"title":"Red Hat Container Registry","connect":true},
 * Connection #0 to host registry-console-default.cloudapps.example.com left intact
 ----
 
-
 Everything seems fine :-)
 
 === Resource Management Lab
@@ -749,11 +748,15 @@ Events:
   1m		1m		1	{kubelet node2.example.com}	spec.containers{hello-openshift}	Normal		Started		Started container with docker id 2674481be26d
 ----
 
-Test that your pod is responding with `Hello OpenShift`:
-
+Test that your pod is responding with `Hello OpenShift`: (note that the root password for node1 is also `r3dh4t1!`)
 ----
-[andrew@master ~]$ ip=`oc describe pod hello-openshift|grep IP:|awk '{print $2}'`
-[andrew@master ~]$ curl http://${ip}:8080
+[andrew@master ~]$ oc describe pod hello-openshift|grep IP:|awk '{print $2}'
+
+10.130.0.4
+
+[andrew@master ~]# ssh root@node1 'curl -s http://10.130.0.4:8080'
+
+root@node1's password: r3dh4t1!
 ----
 
 * This output denotes a correct response:
