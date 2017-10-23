@@ -21,6 +21,8 @@ Have fun and enjoy the Lab :-)
 
 You have seven VMs for your own use. Only the Gateway VM is reachable from the internet. All others are behind a reverse proxy or can only be accessed through the ssh gateway.
 
+To get your external IP address for the Gateway VM, please goto the http://lab.rhpet.de[Seat-to-IP overview Page^] and search your Seat-id in the table.
+
 [cols="3*", options="header"]
 |===
 | VM Name| internal FQDN | internal IP
@@ -47,12 +49,12 @@ You have seven VMs for your own use. Only the Gateway VM is reachable from the i
 
 First login to the ssh gateway with the user `rhpet`:
 
-To obtain your ip adress from the Gateway http://lab.rhpet.de[here^].
+To obtain your ip address from the Gateway http://lab.rhpet.de[here^].
 
 Login into the ssh gateway with the user `rhpet` and the password you got from the instructor.
 
 ----
-[user@localhost ~]$ ssh rhpet@<your gateway ip adress>
+[user@localhost ~]$ ssh rhpet@<your gateway ip address>
 
 The authenticity of host '85.190.180.158 (85.190.180.158)' can't be established.
 ECDSA key fingerprint is SHA256:bsDGeuXiG1zpM3RlsN+RlaAPRaDSi6Y/sJoBP2IXNqU.
@@ -70,7 +72,7 @@ Last login: Sun Oct 22 23:16:00 2017 from gw.example.com
 [rhpet@gw ~]$
 ----
 
-TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. This link works if you have configured the proxy server: https://gw.example.com[SSH Login into the gateway VM^]. As an alternetive you can type in "https://<your gateway ip adress>" in your browser.
+TIP: Alternatively, if you have no ssh client, you can use the shell-in-a-box service. It is running on the Gateway on port 443. But be aware that some web browsers do not support direct Copy & Paste (you can use right click and then *Paste from browser*). So it might be more convenient to use a normal ssh client. This link works if you have configured the proxy server: https://gw.example.com[SSH Login into the gateway VM^]. As an alternetive you can type in "https://<your gateway ip address>" in your browser.
 
 Then get the power of root:
 ----
@@ -83,7 +85,7 @@ Please go to `Settings` → `Advanced` → `Network` → `Settings`
 
 image::http://www.rhpet.de/pictures/Firefox-Proxy.png[Firefox Proxy configuration]
 
-Please use your gateway IP adress, port 80 and check the checkbox at "Use this proxy server for all protocols".
+Please use your gateway IP address, port 80 and check the checkbox at "Use this proxy server for all protocols".
 
 Username for the Proxy is: `admin` +
 Password for the Proxy is: `r3dh4t1!`
