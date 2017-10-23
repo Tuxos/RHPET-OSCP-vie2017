@@ -179,12 +179,12 @@ Login successful.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
-    default
+  * default
     kube-system
     logging
     management-infra
     openshift
-  * openshift-infra
+    openshift-infra
 
 Using project "default".
 ----
@@ -216,17 +216,21 @@ The `oc status` command shows a high level overview of the project currently in 
 
 In project default on server https://master.example.com:8443
 
-svc/docker-registry - 172.30.120.134:5000
+https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
   dc/docker-registry deploys docker.io/openshift3/ose-docker-registry:v3.5.5.8
     deployment #1 deployed 5 months ago - 1 pod
 
 svc/kubernetes - 172.30.0.1 ports 443, 53->8053, 53->8053
 
+https://registry-console-default.cloudapps.example.com (passthrough) to pod port registry-console (svc/registry-console)
+  dc/registry-console deploys registry.access.redhat.com/openshift3/registry-console:3.5
+    deployment #1 deployed 4 months ago - 1 pod (warning: 1 restarts)
+
 svc/router - 172.30.49.219 ports 80, 443, 1936
   dc/router deploys docker.io/openshift3/ose-haproxy-router:v3.5.5.8
     deployment #1 deployed 5 months ago - 1 pod
 
-1 warning identified, use 'oc status -v' to see details.
+2 warnings identified, use 'oc status -v' to see details.
 ----
 
 If you want to learn more about the `oc` command, please look at the following documentation: +
@@ -251,9 +255,10 @@ Check if the installer has deployed the router and the registry containers:
 ----
 [root@master ~]# oc get pods
 
-NAME                      READY     STATUS    RESTARTS   AGE
-docker-registry-1-26xs7   1/1       Running   5          159d
-router-1-xq3r6            1/1       Running   7          159d
+NAME                       READY     STATUS    RESTARTS   AGE
+docker-registry-1-5gvfn    1/1       Running   1          37m
+registry-console-1-tbwwj   1/1       Running   1          138d
+router-1-xq3r6             1/1       Running   8          159d
 ----
 
 === Configure OpenShift
@@ -313,9 +318,10 @@ Check that registry and router are running on the infranode:
 ----
 [root@master ~]# oc get pods -o wide
 
-NAME                      READY     STATUS    RESTARTS   AGE       IP              NODE
-docker-registry-1-26xs7   1/1       Running   5          159d      10.128.0.8      infranode.example.com
-router-1-xq3r6            1/1       Running   7          159d      192.168.0.101   infranode.example.com
+NAME                       READY     STATUS    RESTARTS   AGE       IP              NODE
+docker-registry-1-5gvfn    1/1       Running   1          38m       10.128.0.11     infranode.example.com
+registry-console-1-tbwwj   1/1       Running   1          138d      10.128.0.12     infranode.example.com
+router-1-xq3r6             1/1       Running   8          159d      192.168.0.101   infranode.example.com
 ----
 
 As you can see, all infrastructure pods are running on the infranode, because we configured a default node selector for this.
@@ -348,11 +354,15 @@ To check the URL of the docker registry run `oc status`:
 
 In project default on server https://master.example.com:8443
 
-svc/docker-registry - 172.30.120.134:5000
+https://docker-registry-default.cloudapps.example.com (passthrough) to pod port 5000-tcp (svc/docker-registry)
   dc/docker-registry deploys docker.io/openshift3/ose-docker-registry:v3.5.5.8
     deployment #1 deployed 5 months ago - 1 pod
 
 svc/kubernetes - 172.30.0.1 ports 443, 53->8053, 53->8053
+
+https://registry-console-default.cloudapps.example.com (passthrough) to pod port registry-console (svc/registry-console)
+  dc/registry-console deploys registry.access.redhat.com/openshift3/registry-console:3.5
+    deployment #1 deployed 4 months ago - 1 pod
 
 svc/router - 172.30.49.219 ports 80, 443, 1936
   dc/router deploys docker.io/openshift3/ose-haproxy-router:v3.5.5.8
@@ -361,26 +371,40 @@ svc/router - 172.30.49.219 ports 80, 443, 1936
 1 warning identified, use 'oc status -v' to see details.
 ----
 
-Test the status of the registry with the curl command to communicate with the registry’s service port, `curl -v <your registry IP from oc status>:5000/healthz`.
+Test the status of the registry with the curl command to communicate with the registrys service port, `curl -v https://registry-console-default.cloudapps.example.com --insecure`.
 ----
-[root@master ~]# curl -v 172.30.120.134:5000/healthz
+[root@master ~]# curl -v https://registry-console-default.cloudapps.example.com --insecure | grep "Red Hat Container Registry"
 
-* About to connect() to 172.30.120.134 port 5000 (#0)
-*   Trying 172.30.120.134...
-* Connected to 172.30.120.134 (172.30.120.134) port 5000 (#0)
-> GET /healthz HTTP/1.1
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0* About to connect() to registry-console-default.cloudapps.example.com port 443 (#0)
+*   Trying 192.168.0.101...
+* Connected to registry-console-default.cloudapps.example.com (192.168.0.101) port 443 (#0)
+* Initializing NSS with certpath: sql:/etc/pki/nssdb
+* skipping SSL peer certificate verification
+* SSL connection using TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+* Server certificate:
+* 	subject: CN=registry-console-1-tbwwj
+* 	start date: Jun 08 11:03:26 2017 GMT
+* 	expire date: Mai 15 11:03:27 2117 GMT
+* 	common name: registry-console-1-tbwwj
+* 	issuer: CN=registry-console-1-tbwwj
+> GET / HTTP/1.1
 > User-Agent: curl/7.29.0
-> Host: 172.30.120.134:5000
+> Host: registry-console-default.cloudapps.example.com
 > Accept: */*
->
+> 
 < HTTP/1.1 200 OK
-< Cache-Control: no-cache
-< Date: Sun, 22 Oct 2017 21:39:06 GMT
-< Content-Length: 0
-< Content-Type: text/plain; charset=utf-8
-<
-* Connection #0 to host 172.30.120.134 left intact
+< Content-Security-Policy: default-src 'self' 'unsafe-inline'; connect-src 'self' ws: wss:
+< Transfer-Encoding: chunked
+< Cache-Control: no-cache, no-store
+< 
+{ [data not shown]
+var environment = {"page":{"title":"Red Hat Container Registry","connect":true},"hostname":"registry-console-1-tbwwj","os-release":{"NAME":"Red Hat Container Registry","ID":"registry","PRETTY_NAME":"Red Hat Container Registry"},"OAuth":{"URL":"https://master.example.com:8443//oauth/authorize?client_id=cockpit-oauth-client&response_type=token","ErrorParam":null,"TokenParam":null}};
+100 42229    0 42229    0     0   212k      0 --:--:-- --:--:-- --:--:--  213k
+* Connection #0 to host registry-console-default.cloudapps.example.com left intact
 ----
+
 
 Everything seems fine :-)
 
@@ -1816,7 +1840,7 @@ The nice thing about the topology view is that every object is displayed with a 
 
 === Application Setup
 
-For more background information on Application setup consult the official link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/developer_guide/#dev-guide-new-app[OpenShift Documentation here].
+For more background information on Application setup consult the official link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/developer_guide/#dev-guide-new-app[OpenShift Documentation here^].
 
 There are multiple ways to start or create your application in OpenShift. You can use the oc tool from the command line, or you can use the WebUI. You could even do it with the RestAPI. We will document how to use the command line to create a test application here. You are free to use the Web UI as well. The command line offers a powerful oc sub command called new-app. *oc new-app* is the swiss army knife for application creation as it will create all the objects you need to run your application in the OpenShift Container Platform. 
 
@@ -1849,7 +1873,7 @@ An *image stream* comprises any number of Docker-formatted container images iden
 +
 A *template* describes a set of objects that can be parameterized and processed to produce a list of objects for creation by OpenShift Container Platform. The objects to create can include anything that users have permission to create within a project, for example services, build configurations, and deployment configurations. A template may also define a set of labels to apply to every object defined in the template.
 +
-Be aware that the *Docker Container images* need to be compatible with the OpenShift security restrictions to run in the platform. Most images found on Docker Hub do not adhere to security best practices and run as root. This is not allowed on a default OpenShift installation. Take a good look at the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/creating_images/#creating-images-guidelines[OpenShift Guidelines for Container Images]. Be sure to look through the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/creating_images/#openshift-container-platform-specific-guidelines[OpenShift Specific Guidelines] as well.
+Be aware that the *Docker Container images* need to be compatible with the OpenShift security restrictions to run in the platform. Most images found on Docker Hub do not adhere to security best practices and run as root. This is not allowed on a default OpenShift installation. Take a good look at the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/creating_images/#creating-images-guidelines[OpenShift Guidelines for Container Images^]. Be sure to look through the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/creating_images/#openshift-container-platform-specific-guidelines[OpenShift Specific Guidelines^] as well.
 +
 . Create a Test Application using the ruby:2.3 builder image and the ruby-ex example application. You can do this in the WebUI or on the command line. This is how to do it on the command line : 
 +
@@ -1895,7 +1919,7 @@ NAME      HOST/PORT                                 PATH      SERVICES   PORT   
 rtest     rtest-testproject.cloudapps.example.com             rtest      8080-tcp                 None
 ----
 +
-You Overview page of the Test Project should now display the URL link:http://rtest-testproject.cloudapps.example.com[http://rtest-testproject.cloudapps.example.com] instead of the "Create Route" button. Click the link to go see if your application is working. The result should look like this :
+You Overview page of the Test Project should now display the URL link:http://rtest-testproject.cloudapps.example.com[http://rtest-testproject.cloudapps.example.com^] instead of the "Create Route" button. Click the link to go see if your application is working. The result should look like this :
 +
 image::http://people.redhat.com/~llange/labimg/TestProject-rtest1-the-app.png[]
 +
@@ -1909,9 +1933,9 @@ If something went wrong and you want to delete your application, you can do this
 
 === Application Health Checks
 
-Read more about Readiness and Liveness Check in the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/developer_guide/#dev-guide-application-health[OpenShift Developer Guide about health checks].
+Read more about Readiness and Liveness Check in the link:https://access.redhat.com/documentation/en-us/openshift_container_platform/3.5/html-single/developer_guide/#dev-guide-application-health[OpenShift Developer Guide about health checks^].
 
-It is good style for your application to provide health information for the platform to consume. A best practice pattern is to offer a web page that provides a good return code if your app is healthy. The ruby example that we used provides this information here : link:http://rtest-testproject.cloudapps.example.com/health[http://rtest-testproject.cloudapps.example.com/health]. 
+It is good style for your application to provide health information for the platform to consume. A best practice pattern is to offer a web page that provides a good return code if your app is healthy. The ruby example that we used provides this information here : link:http://rtest-testproject.cloudapps.example.com/health[http://rtest-testproject.cloudapps.example.com/health^]. 
 
 You can take a look at the application source on Github.com : https://github.com/openshift/ruby-ex for more details.
 
@@ -1943,7 +1967,7 @@ The platform is now able to even detect internal application failure situations,
 
 Container Scans help you to determine known vulnerabilities in your container images. You can run Container Images scans from CloudForms. Initiate a Container Scan for your the container image of the "rtest" application. 
 
-. Sign in to your CloudForms instance link:https://cf.example.com[https://cf.example.com]. 
+. Sign in to your CloudForms instance link:https://cf.example.com[https://cf.example.com^]. 
 . Log in as User "admin" with the password "r3dh4t1!".
 . Go to : Compute -> Containers -> Container Images
 . Fill out the Search box in the upper right corner search for "rtest".
@@ -2009,7 +2033,6 @@ You should now see values like these :
 * We do have a Compliance History available now.
 ====
 +
-// TODO explain SCAP and OpenSCAP
 . Click on the line "OpenScap Scan Results"
 . Click the String "Result" to sort for fails
 . You will notice that the name of the rule that failed is no helpful information for us 
@@ -2021,13 +2044,13 @@ image::http://people.redhat.com/~llange/labimg/OpenSCAP-scan-results-in-cf-rtest
 +
 image::http://people.redhat.com/~llange/labimg/rtest-scan-results-scap-html.png[]
 +
-Every Red Hat Security Advisory is explained in fine detail on https://rhn.redhat.com/errata and https://access.redhat.com/errata. The first page is the older incarnation that is still around and has more detail than the Customer Portal equivalent. You can go directly to https://access.redhat.com/errata/RHSA-2017:0372 . 
+Every Red Hat Security Advisory is explained in fine detail on https://rhn.redhat.com/errata[https://rhn.redhat.com/errata^] and https://access.redhat.com/errata[https://access.redhat.com/errata^]. The first page is the older incarnation that is still around and has more detail than the Customer Portal equivalent. You can go directly to https://access.redhat.com/errata/RHSA-2017:0372[https://access.redhat.com/errata/RHSA-2017:0372^] . 
 +
 ====
 .Links to the Customer Portal Advisory Pages for the issues found
-. link:https://access.redhat.com/errata/RHSA-2017:0372[RHSA-2017:0372: kernel-aarch64 security and bug fix update (Important)]
-. link:https://access.redhat.com/errata/RHSA-2017:1308[RHSA-2017:1308: kernel security, bug fix, and enhancement update (Important)]
-. link:https://access.redhat.com/errata/RHSA-2017:1365[RHSA-2017:1365: nss security and bug fix update (Important)]
+. link:https://access.redhat.com/errata/RHSA-2017:0372[RHSA-2017:0372: kernel-aarch64 security and bug fix update (Important)^]
+. link:https://access.redhat.com/errata/RHSA-2017:1308[RHSA-2017:1308: kernel security, bug fix, and enhancement update (Important)^]
+. link:https://access.redhat.com/errata/RHSA-2017:1365[RHSA-2017:1365: nss security and bug fix update (Important)^]
 ====
 +
 Lets go through the list to see and evaluate what this scan found in our image.
@@ -2076,7 +2099,7 @@ ____
 To be able to evaluate how to fix issues, you need to know where an Image came from and who created it. You should turn to the image creator first to fix issues found. There many different places that you can turn to for details of this image. 
 
 . You can look at the detailed page for the rtest Container Image in CloudForms
-. You can open the link:https://registry-console-default.cloudapps.example.com/registry#/images/testproject/rtest:latest[OpenShift Registry Console] in OpenShift ( login as admin or andrew )
+. You can open the link:https://registry-console-default.cloudapps.example.com/registry#/images/testproject/rtest:latest[OpenShift Registry Console^] in OpenShift ( login as admin or andrew )
 . You can got to the `oc` command line in OpenShift and look at Images and ImageStreams.
 
 We are using the `oc` command here. Note the bold printed parts below :
@@ -2167,19 +2190,19 @@ Environment:	OPENSHIFT_BUILD_NAME=rtest-1
 
 //Open TODO Explain S2I - Source 2 Image Builds.
 
-Lets find the image in the link:https://access.redhat.com/containers[Red Hat Container Catalog]. Our Red Hat Container Catalog provides detailed information about the images that we as Red Hat provide. We do document known issues and the fixes once they become available. We recently added a "Health Index" to deliver an easy first impression about the freshness of an image. 
+Lets find the image in the link:https://access.redhat.com/containers[Red Hat Container Catalog^]. Our Red Hat Container Catalog provides detailed information about the images that we as Red Hat provide. We do document known issues and the fixes once they become available. We recently added a "Health Index" to deliver an easy first impression about the freshness of an image. 
 
-. Got to link:https://access.redhat.com/containers[https://access.redhat.com/containers].
+. Got to link:https://access.redhat.com/containers[https://access.redhat.com/containers^].
 +
 . Fill out the search field, put in *rhscl/ruby-23* and hit return. 
 +
 You can see that we do have a newer release available than 6.7. Back when I did this, it was 6.8 as you can see in the screen shot below. You will need to click on "Tags" to get to that same view.
 +
-image::http://people.redhat.com/~llange/labimg/RHCC-ruby-23-with-tags.png[Red Hat Container Catalog Ruby 2.3 Image Tags Tab]
+image::http://people.redhat.com/~llange/labimg/RHCC-ruby-23-with-tags.png[Red Hat Container Catalog Ruby 2.3 Image Tags Tab^]
 +
-. Click the tag "link:https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/ruby-23-rhel7/images/2.3-6.7[2.3-6.7]" in your list to get to the details about the builder image that we were using.
+. Click the tag "link:https://access.redhat.com/containers/#/registry.access.redhat.com/rhscl/ruby-23-rhel7/images/2.3-6.7[2.3-6.7^]" in your list to get to the details about the builder image that we were using.
 
-image::http://people.redhat.com/~llange/labimg/RHCC-ruby-23-67-details.png[Red Hat Container Calalog Ruby 2.3-6.7 Details]
+image::http://people.redhat.com/~llange/labimg/RHCC-ruby-23-67-details.png[Red Hat Container Calalog Ruby 2.3-6.7 Details^]
 
 Lets take a closer look at the details in the 2.3-6.7 release of the rhscl/ruby-23-rhel7 builder image. The screen shot above lists the health index as B. It has an explanation on the side what this means. 
 
