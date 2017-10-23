@@ -765,6 +765,8 @@ root@node1's password: r3dh4t1!
 Hello OpenShift!
 ----
 
+We must ssh into an other node, because we don´t have direct access to the pod network on the master node.
+
 Delete all the objects in your `hello-pod.json` definition file, which, at this point, is the pod only:
 
 ----
@@ -1104,8 +1106,13 @@ Test that your service is working:
 
 ----
 
-[andrew@master ~]$ ip=`oc describe service hello-service|grep IP:|awk '{print $2}'`
-[andrew@master ~]$ curl http://${ip}:8888
+[andrew@master ~]$ oc describe service hello-service|grep IP:|awk '{print $2}'
+
+172.30.18.176
+
+[andrew@master ~]$ ssh root@node1 'curl -s http://172.30.18.176:8888'
+
+root@node1's password: r3dh4t1!
 
 Hello OpenShift!
 ----
