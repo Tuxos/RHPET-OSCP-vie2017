@@ -1715,6 +1715,12 @@ After the build is complete and both frontend and database are up and running, v
 [NOTE]
 Be sure to use HTTP and _not_ HTTPS. HTTPS does not work for this example because the form submission was coded with HTTP links.
 
+=== The End
+
+Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab, we hope you enjoyed it.
+
+Have a good day :-)
+
 == Containers and Security Lab
 
 In this Lab you will:
@@ -2591,7 +2597,7 @@ image::http://people.redhat.com/~llange/labimg/OpenShift-Scaling-rtest-prevented
 
 The message reads : "Forbidden: this image is prohibited by policy".
 
-== The End
+=== The End
 
 Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab, we hope you enjoyed it.
 
