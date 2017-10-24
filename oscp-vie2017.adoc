@@ -1782,9 +1782,17 @@ There are multiple ways to start or create your application in OpenShift. You ca
 
 You will first create a project for you application to live in. Projects are used to separate Application Management. There can be multiple apps with the same name on the same OpenShift cluster, as long as they live in different projects. 
 
-. SSH into the `master.example.com` node and change to the user `andrew`. Create a project called "testproject" now :
+. SSH into the `master` node and change to the user `andrew`. Create a project called "testproject" now :
 +
 ----
+[root@gw ~]# ssh master
+
+Last login: Tue Oct 24 08:00:09 2017 from 192.168.0.250
+
+[root@master ~]# su - andrew
+
+Last login: Tue Oct 24 08:00:14 EDT 2017 on pts/1
+
 [andrew@master ~]$ oc new-project testproject --description="My Test Project" --display-name="Test Project"
 
 now using project "testproject" on server "https://master.example.com:8443".
