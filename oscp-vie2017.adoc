@@ -8,9 +8,6 @@ Dennis Deitermann (dennis@redhat.com), Lutz Lange (Container Security part)
 
 image::http://www.rhpet.de/pictures/forum_vie2017.jpg[Red Hat Forum 2017 - Vienna]
 
-[.lead]
-Red Hat Forum 2017 - Vienna Edition
-
 == Introduction into the Lab
 
 In this Lab you will 
