@@ -1715,7 +1715,7 @@ After the build is complete and both frontend and database are up and running, v
 [NOTE]
 Be sure to use HTTP and _not_ HTTPS. HTTPS does not work for this example because the form submission was coded with HTTP links.
 
-=== The End
+== The End
 
 Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab, we hope you enjoyed it.
 
