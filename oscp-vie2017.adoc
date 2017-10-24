@@ -1796,6 +1796,22 @@ Last login: Tue Oct 24 08:00:09 2017 from 192.168.0.250
 
 Last login: Tue Oct 24 08:00:14 EDT 2017 on pts/1
 ----
+. Login into OpenShift with `andrew` and the password `r3dh4t1!`.
++
+----
+[andrew@master ~]$ oc login https://master.example.com:8443 -u andrew
+
+Authentication required for https://master.example.com:8443 (openshift)
+Username: andrew
+Password: r3dh4t1!
+Login successful.
+
+You don't have any projects. You can try to create a new project, by running
+
+    oc new-project <projectname>
+
+Welcome! See 'oc help' to get started.
+----
 . Create a project called "testproject".
 +
 ----
