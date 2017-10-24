@@ -1864,7 +1864,7 @@ Be aware that the *Docker Container images* need to be compatible with the OpenS
     Run 'oc status' to view your app.
 ----
 +
-. Go to the Overview Page of your testproject in the Web UI. If you are quick enough, you will be able to see the following screen. Notice that there is a build in progress.
+. Go to the OpenShift Webinterface https://master.example.com:8443[https://master.example.com:8443^] login as `andrew` with the password `r3dh4t1!`. Click on `Test Project" to see the overview Page in the Web UI. If you are quick enough, you will be able to see the following screen. Notice that there is a build in progress.
 +
 image::http://people.redhat.com/~llange/labimg/TestProject-rtest1-Deploy-1.png[]
 +
