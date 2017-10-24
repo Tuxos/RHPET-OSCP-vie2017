@@ -10,7 +10,7 @@ image::http://www.rhpet.de/pictures/forum_vie2017.jpg[Red Hat Forum 2017 - Vienn
 
 == Introduction into the Lab
 
-In this Lab you will get a first impression of the OpenShift Container Platform. You can decide to do the `Getting started with the OpenShift CLI and the Webinterface` *or* the `Containers and Security Lab`.
+In this Lab you will get a first impression of the OpenShift Container Platform. You can decide to do the `Getting started with the OpenShift CLI and the Webinterface` _*or*_ the `Containers and Security Lab`.
 
 Unfortunately there is too less time for both Labs.
 
