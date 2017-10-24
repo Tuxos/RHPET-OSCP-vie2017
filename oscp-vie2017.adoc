@@ -1994,7 +1994,7 @@ Look for the scan in the Web UI
 +
 image::http://people.redhat.com/~llange/labimg/Image-Scan-in-progress.png[]
 +
-The scan and the transfer of the information takes a few minutes in our demo environment. After the scan you should be able to see the scan details after a reload of the page in the CloudForms Interface.
+The scan and the transfer of the information takes a few minutes in our demo environment. After the scan you should be able to see the scan details after a reload of the page in the CloudForms Interface. Meanwhile you can watch the log. Click on the pod name `manageiq-img-scan-f552d` on then on `Logs`.
 +
 image::http://people.redhat.com/~llange/labimg/rtest-scan-results-overview.png[]
 +
