@@ -1838,6 +1838,30 @@ Be aware that the *Docker Container images* need to be compatible with the OpenS
 +
 ----
 [andrew@master ~]$ oc new-app openshift/ruby:2.3~https://github.com/openshift/ruby-ex --name=rtest
+
+--> Found image 1ed005e (6 months old) in image stream "openshift/ruby" under tag "2.3" for "openshift/ruby:2.3"
+
+    Ruby 2.3 
+    -------- 
+    Platform for building and running Ruby 2.3 applications
+
+    Tags: builder, ruby, ruby23, rh-ruby23
+
+    * A source build using source code from https://github.com/openshift/ruby-ex will be created
+      * The resulting image will be pushed to image stream "rtest:latest"
+      * Use 'start-build' to trigger a new build
+    * This image will be deployed in deployment config "rtest"
+    * Port 8080/tcp will be load balanced by service "rtest"
+      * Other containers can access this service through the hostname "rtest"
+
+--> Creating resources ...
+    imagestream "rtest" created
+    buildconfig "rtest" created
+    deploymentconfig "rtest" created
+    service "rtest" created
+--> Success
+    Build scheduled, use 'oc logs -f bc/rtest' to track its progress.
+    Run 'oc status' to view your app.
 ----
 +
 . Go to the Overview Page of your testproject in the Web UI. If you are quick enough, you will be able to see the following screen. Notice that there is a build in progress.
