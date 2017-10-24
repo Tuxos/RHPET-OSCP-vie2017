@@ -6,13 +6,14 @@ Dennis Deitermann (dennis@redhat.com), Lutz Lange (Container Security part)
 :numbered:
 :icons: font
 
+image::http://www.rhpet.de/pictures/forum_vie2017.jpg
+
 [.lead]
 Red Hat Forum 2017 - Vienna Edition
 
 == Introduction into the Lab
 
-In this Lab you will learn how to Manage your Containers with OpenShift. First you will see how to use the CLI and the Webinterface and then we will have a short session about Containers and Security. Two hours are too less to show you all stuff regarding OpenShift, but we hope you´ll get a first good impression of OpenShift.
-
+In this Lab you will 
 You can start with the Containers and Security Lab (but you mustn´t ;-), to get sure that you don´t miss that part because of missing time.
 
 Have fun and enjoy the Lab :-)
