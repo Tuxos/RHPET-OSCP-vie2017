@@ -1759,7 +1759,7 @@ We did deploy a CloudForms 4.5 for you as part of this Lab. Open your Browser an
 
 . Log into the CloudForms Interface using the User `admin` and the password `r3dh4t1!`. 
 +
-You will find the main navigation panel on the right hand side. Hover over Compute, move to Containers and Click on `Overview` in the 3rd side panel. This will bring you to the Container Dashboard. This is an Overview over all configured OpenShift environments.
+You will find the main navigation panel on the right hand side. Hover over `Compute`, move to `Containers` and Click on `Overview` in the 3rd side panel. This will bring you to the Container Dashboard. This is an Overview over all configured OpenShift environments.
 +
 image::http://people.redhat.com/~llange/labimg/CloudForms-Container-Provider-Dashboardv2.png[Container Dashboard]
 +
