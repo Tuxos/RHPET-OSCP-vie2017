@@ -1953,6 +1953,7 @@ Container Scans help you to determine known vulnerabilities in your container im
 .Can't find the image -> Initiate a Container Provider Refresh
 ====
 If you can't see your image, you can wait and try again later or you can initiate a Provider Refresh in CloudForms. 
+
 . Go to "Compute" -> "Containers" -> "Providers"
 . Select the OpenShift Cluster 1
 . Select the Configuration Menu and click "Refresh Items and Relationships".
