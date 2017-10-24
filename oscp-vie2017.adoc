@@ -275,12 +275,6 @@ OpenShift Container Platform provides an integrated container registry called Op
 
 Whenever a new image is pushed to OCR, the registry notifies OpenShift Container Platform about the new image, passing along all the information about it, such as the namespace, name, and image metadata. Different pieces of OpenShift Container Platform react to new images, creating new builds and deployments.
 
-OCR can also be deployed as a stand-alone component that acts solely as a container registry, without the build and deployment integration. See Installing a Stand-alone Deployment of OpenShift Container Registry for details.
-
-==== Third Party Registries
-
-OpenShift Container Platform can create containers using images from third party registries, but it is unlikely that these registries offer the same image notification support as the integrated OpenShift Container Platform registry. In this situation OpenShift Container Platform will fetch tags from the remote registry upon imagestream creation. Refreshing the fetched tags is as simple as running oc import-image <stream>. When new images are detected, the previously-described build and deployment reactions occur.
-
 ==== Check integrated Registry
 
 In this lab scenario, infranode is the target for both the registry and the default router.
