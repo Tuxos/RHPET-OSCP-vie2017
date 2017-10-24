@@ -1753,20 +1753,6 @@ CloudForms is a manager of managers. It talks to the APIs of other management in
 
 image::http://people.redhat.com/~llange/labimg/CloudForms-Overview1.png[]
 
-CloudForms gathers information about objects first and puts these in the internal (PostgreSQL) database. You can then take action based on the found information and influence the managed infrastructures. This was called *Control*. Provisioning instances or virtual machines or containers is an example for control.
-
-Control is the basis for *Service Automation*. This is where the Service Catalog features of CloudForms come into play. You can build your own Services by designing your own or reusing existing Forms to collect all the details you need to provision and manage your workloads. The Service Lifecycle goes through several stages. You can order a service from a catalog. This will create a request that is then approved or denied. Approval can be manual or automatic. An approved request is then scheduled an run, thus creating a service. Another important part of a services life is retirement. That process can be planned and implemented with CloudForms. 
-
-You can think of CloudForms as a framework that allows for implementation of *your processes* across all the supported infrastrutures.
-
-CloudForms can even take a look into the managed workloads. This is called *Smart State Analysis* and works storage based. CloudForms extracts a certain level of detail from the analysed workloads. These are things like installed Software with versions and Users e.g. You can even extend this mechanism to autodetect and label certain workloads. This tagging is another key aspect in CloudForms that helps you to structure your environment in a sensible way. Some people use Tags to designate Service Level Agreements. 
-
-*Policy & Compliance* give me mechanisms to define what states I want to see in my environment and how to get there. I could for example postulate that every Microsoft Windows system needs to have a current virus scanner. CloudForms can see into the workloads and can see what software is installed. I could than declare / implement what should happen if there is no or an out of date virus scanner found. That action is highly depending on your environment and can range from inform someone, to do not allow this workload to run.
-
-The following image illustrates the level of detail that CloudForms collects for workloads. This is a virtual machine called ansible-tower. It is running a RHEL instance, the same level of detail is available for Microsoft Windows Workloads.
-
-image::http://people.redhat.com/~llange/labimg/Virtual-Machine-Details-CloudForms.png[Virtual Machine Details]
-
 === Connect to CloudForms
 
 We did deploy a CloudForms 4.5 for you as part of this Lab. Open your Browser and connect to it via https://cf.example.com[https://cf.example.com^]. 
@@ -2617,5 +2603,3 @@ The message reads : "Forbidden: this image is prohibited by policy".
 Thanks a lot for attending the *Manage your Conatainers with OpenShift* Lab, we hope you enjoyed it.
 
 Have a good day :-)
-
-RED HAT! WE PUT THE *'F'* IN OPENSHIFT!
