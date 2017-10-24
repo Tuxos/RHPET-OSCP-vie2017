@@ -1988,7 +1988,7 @@ We want to change this.
 Look for the scan in the Web UI
 +
 .. Go back to the OpenShift Web UI
-.. Make sure you are loged in as `admin`
+.. Make sure you are loged in as `admin` with the password `r3dh4t1!`
 .. Select the "management-infra" project
 .. You should see a workload starting for the container scan. Notice the openshift3/image-inspector image.
 +
